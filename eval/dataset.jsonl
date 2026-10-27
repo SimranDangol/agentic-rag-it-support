@@ -1,0 +1,51 @@
+{"q": "My VPN keeps dropping every few minutes", "type": "it", "expected_source": "vpn_guide.md"}
+{"q": "How do I reconnect the VPN after my laptop wakes from sleep?", "type": "it", "expected_source": "vpn_guide.md"}
+{"q": "VPN error 619 what does it mean", "type": "it", "expected_source": "vpn_error_codes.md"}
+{"q": "Cannot connect to company wifi", "type": "it", "expected_source": "wifi_setup.md"}
+{"q": "How do I reset my password?", "type": "it", "expected_source": "password_reset.md"}
+{"q": "I forgot my Windows login password", "type": "it", "expected_source": "password_reset.md"}
+{"q": "My account is locked out", "type": "it", "expected_source": "account_lockout.md"}
+{"q": "Too many failed login attempts now locked", "type": "it", "expected_source": "account_lockout.md"}
+{"q": "How do I log in with SSO?", "type": "it", "expected_source": "sso_login.md"}
+{"q": "Set up my new laptop as a new joiner", "type": "it", "expected_source": "new_joiner_setup.md"}
+{"q": "How do I set up MFA on my phone?", "type": "it", "expected_source": "mfa_setup.md"}
+{"q": "I lost my phone how do I get MFA codes?", "type": "it", "expected_source": "mfa_lost_phone.md"}
+{"q": "Switching from Google Authenticator to Microsoft Authenticator", "type": "it", "expected_source": "authenticator_migration.md"}
+{"q": "Set up Outlook on my new laptop", "type": "it", "expected_source": "outlook_setup.md"}
+{"q": "My mailbox is full I cannot send emails", "type": "it", "expected_source": "mailbox_full.md"}
+{"q": "How do I access a shared mailbox in Outlook?", "type": "it", "expected_source": "shared_mailbox.md"}
+{"q": "Calendar not syncing with my phone", "type": "it", "expected_source": "calendar_sync.md"}
+{"q": "How do I add the office printer?", "type": "it", "expected_source": "printer_setup.md"}
+{"q": "Printer showing offline even though it is on", "type": "it", "expected_source": "printer_offline.md"}
+{"q": "How do I scan a document to my email?", "type": "it", "expected_source": "scan_to_email.md"}
+{"q": "Error 0x80070005 fix", "type": "it", "expected_source": "windows_errors.md"}
+{"q": "Access denied error code 0x80070005 Windows", "type": "it", "expected_source": "windows_errors.md"}
+{"q": "My laptop is running very slow", "type": "it", "expected_source": "laptop_slow.md"}
+{"q": "How do I install approved software?", "type": "it", "expected_source": "software_install.md"}
+{"q": "BitLocker recovery key where do I find it?", "type": "it", "expected_source": "bitlocker_recovery.md"}
+{"q": "I received a suspicious phishing email what should I do?", "type": "it", "expected_source": "phishing_report.md"}
+{"q": "Who is the IT helpdesk contact?", "type": "it", "expected_source": "helpdesk_contacts.md"}
+{"q": "What is the helpdesk extension number?", "type": "it", "expected_source": "helpdesk_contacts.md"}
+{"q": "Network drive not showing up after restart", "type": "it", "expected_source": "network_faq.md"}
+{"q": "Cannot reach internal company website", "type": "it", "expected_source": "network_faq.md"}
+{"q": "What is the latest macOS version?", "type": "it", "expected_source": null}
+{"q": "How do I delete my Google account?", "type": "it", "expected_source": null}
+{"q": "What is ChatGPT?", "type": "it", "expected_source": null}
+{"q": "How do I invest in stocks?", "type": "small_talk", "expected_source": null}
+{"q": "Thanks, that worked!", "type": "small_talk", "expected_source": null}
+{"q": "Hello there", "type": "small_talk", "expected_source": null}
+{"q": "Good morning", "type": "small_talk", "expected_source": null}
+{"q": "You are helpful, thanks", "type": "small_talk", "expected_source": null}
+{"q": "What is the weather today?", "type": "small_talk", "expected_source": null}
+{"q": "Tell me a joke", "type": "small_talk", "expected_source": null}
+{"q": "Bye see you later", "type": "small_talk", "expected_source": null}
+{"q": "Great job!", "type": "small_talk", "expected_source": null}
+{"q": "Can you help me?", "type": "small_talk", "expected_source": null}
+{"q": "asdfghjkl", "type": "small_talk", "expected_source": null}
+{"q": "I cannot print from my Mac", "type": "it", "expected_source": "printer_offline.md"}
+{"q": "Two-factor authentication setup", "type": "it", "expected_source": "mfa_setup.md"}
+{"q": "VPN client keeps timing out", "type": "it", "expected_source": "vpn_guide.md"}
+{"q": "Permission denied error on Windows", "type": "it", "expected_source": "windows_errors.md"}
+{"q": "How to report a spam email", "type": "it", "expected_source": "phishing_report.md"}
+{"q": "New employee laptop setup guide", "type": "it", "expected_source": "new_joiner_setup.md"}
+{"q": "Outlook calendar invite not working", "type": "it", "expected_source": "calendar_sync.md"}
