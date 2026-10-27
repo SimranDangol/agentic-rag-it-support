@@ -1,51 +1,87 @@
-{"q": "My VPN keeps dropping every few minutes", "type": "it", "expected_source": "vpn_guide.md"}
-{"q": "How do I reconnect the VPN after my laptop wakes from sleep?", "type": "it", "expected_source": "vpn_guide.md"}
-{"q": "VPN error 619 what does it mean", "type": "it", "expected_source": "vpn_error_codes.md"}
-{"q": "Cannot connect to company wifi", "type": "it", "expected_source": "wifi_setup.md"}
-{"q": "How do I reset my password?", "type": "it", "expected_source": "password_reset.md"}
-{"q": "I forgot my Windows login password", "type": "it", "expected_source": "password_reset.md"}
-{"q": "My account is locked out", "type": "it", "expected_source": "account_lockout.md"}
-{"q": "Too many failed login attempts now locked", "type": "it", "expected_source": "account_lockout.md"}
-{"q": "How do I log in with SSO?", "type": "it", "expected_source": "sso_login.md"}
-{"q": "Set up my new laptop as a new joiner", "type": "it", "expected_source": "new_joiner_setup.md"}
-{"q": "How do I set up MFA on my phone?", "type": "it", "expected_source": "mfa_setup.md"}
-{"q": "I lost my phone how do I get MFA codes?", "type": "it", "expected_source": "mfa_lost_phone.md"}
-{"q": "Switching from Google Authenticator to Microsoft Authenticator", "type": "it", "expected_source": "authenticator_migration.md"}
-{"q": "Set up Outlook on my new laptop", "type": "it", "expected_source": "outlook_setup.md"}
-{"q": "My mailbox is full I cannot send emails", "type": "it", "expected_source": "mailbox_full.md"}
-{"q": "How do I access a shared mailbox in Outlook?", "type": "it", "expected_source": "shared_mailbox.md"}
-{"q": "Calendar not syncing with my phone", "type": "it", "expected_source": "calendar_sync.md"}
-{"q": "How do I add the office printer?", "type": "it", "expected_source": "printer_setup.md"}
-{"q": "Printer showing offline even though it is on", "type": "it", "expected_source": "printer_offline.md"}
-{"q": "How do I scan a document to my email?", "type": "it", "expected_source": "scan_to_email.md"}
-{"q": "Error 0x80070005 fix", "type": "it", "expected_source": "windows_errors.md"}
-{"q": "Access denied error code 0x80070005 Windows", "type": "it", "expected_source": "windows_errors.md"}
-{"q": "My laptop is running very slow", "type": "it", "expected_source": "laptop_slow.md"}
-{"q": "How do I install approved software?", "type": "it", "expected_source": "software_install.md"}
+{"q": "My account got locked out after multiple failed password attempts", "type": "it", "expected_source": "account_lockout.md"}
+{"q": "How long do I have to wait for my account to automatically unlock?", "type": "it", "expected_source": "account_lockout.md"}
+{"q": "How do I clear stored stale credentials in Windows Credential Manager to prevent repeated lockouts?", "type": "it", "expected_source": "account_lockout.md"}
+{"q": "How do I switch from Google Authenticator to Microsoft Authenticator?", "type": "it", "expected_source": "authenticator_migration.md"}
+{"q": "How do I migrate my two-factor authentication to the new Authenticator app?", "type": "it", "expected_source": "authenticator_migration.md"}
+{"q": "How do I remove the legacy authenticator app after registering Microsoft Authenticator?", "type": "it", "expected_source": "authenticator_migration.md"}
 {"q": "BitLocker recovery key where do I find it?", "type": "it", "expected_source": "bitlocker_recovery.md"}
-{"q": "I received a suspicious phishing email what should I do?", "type": "it", "expected_source": "phishing_report.md"}
-{"q": "Who is the IT helpdesk contact?", "type": "it", "expected_source": "helpdesk_contacts.md"}
-{"q": "What is the helpdesk extension number?", "type": "it", "expected_source": "helpdesk_contacts.md"}
-{"q": "Network drive not showing up after restart", "type": "it", "expected_source": "network_faq.md"}
-{"q": "Cannot reach internal company website", "type": "it", "expected_source": "network_faq.md"}
-{"q": "What is the latest macOS version?", "type": "it", "expected_source": null}
-{"q": "How do I delete my Google account?", "type": "it", "expected_source": null}
-{"q": "What is ChatGPT?", "type": "it", "expected_source": null}
-{"q": "How do I invest in stocks?", "type": "small_talk", "expected_source": null}
-{"q": "Thanks, that worked!", "type": "small_talk", "expected_source": null}
-{"q": "Hello there", "type": "small_talk", "expected_source": null}
-{"q": "Good morning", "type": "small_talk", "expected_source": null}
-{"q": "You are helpful, thanks", "type": "small_talk", "expected_source": null}
-{"q": "What is the weather today?", "type": "small_talk", "expected_source": null}
-{"q": "Tell me a joke", "type": "small_talk", "expected_source": null}
-{"q": "Bye see you later", "type": "small_talk", "expected_source": null}
-{"q": "Great job!", "type": "small_talk", "expected_source": null}
-{"q": "Can you help me?", "type": "small_talk", "expected_source": null}
-{"q": "asdfghjkl", "type": "small_talk", "expected_source": null}
-{"q": "I cannot print from my Mac", "type": "it", "expected_source": "printer_offline.md"}
-{"q": "Two-factor authentication setup", "type": "it", "expected_source": "mfa_setup.md"}
-{"q": "VPN client keeps timing out", "type": "it", "expected_source": "vpn_guide.md"}
-{"q": "Permission denied error on Windows", "type": "it", "expected_source": "windows_errors.md"}
-{"q": "How to report a spam email", "type": "it", "expected_source": "phishing_report.md"}
-{"q": "New employee laptop setup guide", "type": "it", "expected_source": "new_joiner_setup.md"}
-{"q": "Outlook calendar invite not working", "type": "it", "expected_source": "calendar_sync.md"}
+{"q": "My computer is stuck on the blue BitLocker recovery screen asking for a 48-digit key", "type": "it", "expected_source": "bitlocker_recovery.md"}
+{"q": "How do I retrieve my BitLocker recovery key from the Microsoft 365 portal?", "type": "it", "expected_source": "bitlocker_recovery.md"}
+{"q": "Outlook calendar not syncing with my mobile device", "type": "it", "expected_source": "calendar_sync.md"}
+{"q": "How do I clear the offline calendar cache in Outlook desktop?", "type": "it", "expected_source": "calendar_sync.md"}
+{"q": "Shared calendar appointments are missing or not updating in Outlook", "type": "it", "expected_source": "calendar_sync.md"}
+{"q": "What is the IT helpdesk phone number and extension?", "type": "it", "expected_source": "helpdesk_contacts.md"}
+{"q": "Where are the walk-up Tech Lounges located and what are their hours?", "type": "it", "expected_source": "helpdesk_contacts.md"}
+{"q": "How do I submit an urgent Priority 1 ticket to the IT helpdesk?", "type": "it", "expected_source": "helpdesk_contacts.md"}
+{"q": "My laptop is running extremely slow and freezing", "type": "it", "expected_source": "laptop_slow.md"}
+{"q": "How do I disable heavy startup programs in Windows Task Manager?", "type": "it", "expected_source": "laptop_slow.md"}
+{"q": "Laptop fan is running loud and CPU is thermal throttling", "type": "it", "expected_source": "laptop_slow.md"}
+{"q": "My mailbox is full and I cannot send or receive new emails", "type": "it", "expected_source": "mailbox_full.md"}
+{"q": "How do I use the Mailbox Cleanup tool to find large emails?", "type": "it", "expected_source": "mailbox_full.md"}
+{"q": "How do I request an Online In-Place Archive mailbox for extra storage?", "type": "it", "expected_source": "mailbox_full.md"}
+{"q": "I lost my phone and cannot receive MFA authentication codes", "type": "it", "expected_source": "mfa_lost_phone.md"}
+{"q": "How do I request an emergency Temporary Access Pass (TAP)?", "type": "it", "expected_source": "mfa_lost_phone.md"}
+{"q": "My smartphone with Microsoft Authenticator was stolen what is the protocol?", "type": "it", "expected_source": "mfa_lost_phone.md"}
+{"q": "How do I set up MFA on my smartphone for the first time?", "type": "it", "expected_source": "mfa_setup.md"}
+{"q": "How do I add a backup secondary phone number for MFA authentication?", "type": "it", "expected_source": "mfa_setup.md"}
+{"q": "What is the number matching prompt in Microsoft Authenticator?", "type": "it", "expected_source": "mfa_setup.md"}
+{"q": "Mapped network drives (Z drive or S drive) disappeared after restart", "type": "it", "expected_source": "network_faq.md"}
+{"q": "Cannot access internal company intranet websites or file shares", "type": "it", "expected_source": "network_faq.md"}
+{"q": "How do I reconnect persistent network drives using net use?", "type": "it", "expected_source": "network_faq.md"}
+{"q": "How do I set up my corporate laptop on my first day as a new employee?", "type": "it", "expected_source": "new_joiner_setup.md"}
+{"q": "What is the initial default password for new joiners at Acme Corp?", "type": "it", "expected_source": "new_joiner_setup.md"}
+{"q": "How do I install required company software from the Acme Company Portal on day one?", "type": "it", "expected_source": "new_joiner_setup.md"}
+{"q": "How do I configure Outlook on a new Windows 11 laptop?", "type": "it", "expected_source": "outlook_setup.md"}
+{"q": "How do I set up corporate email in Outlook Mobile on my iPhone or Android?", "type": "it", "expected_source": "outlook_setup.md"}
+{"q": "How do I enable Cached Exchange Mode in Outlook settings?", "type": "it", "expected_source": "outlook_setup.md"}
+{"q": "How do I reset my forgotten Windows domain password?", "type": "it", "expected_source": "password_reset.md"}
+{"q": "What are the Acme Corp password complexity requirements?", "type": "it", "expected_source": "password_reset.md"}
+{"q": "How do I synchronize my newly reset password to my laptop while remote?", "type": "it", "expected_source": "password_reset.md"}
+{"q": "I received a suspicious email that looks like phishing what should I do?", "type": "it", "expected_source": "phishing_report.md"}
+{"q": "How do I report a phishing email using the Outlook Report Phishing button?", "type": "it", "expected_source": "phishing_report.md"}
+{"q": "What should I do if I accidentally clicked a link or entered my password on a suspicious site?", "type": "it", "expected_source": "phishing_report.md"}
+{"q": "Network printer shows offline in Windows 11 even though the printer is powered on", "type": "it", "expected_source": "printer_offline.md"}
+{"q": "How do I restart the Windows Print Spooler service to clear offline status?", "type": "it", "expected_source": "printer_offline.md"}
+{"q": "Print jobs are stuck in queue and printer will not print", "type": "it", "expected_source": "printer_offline.md"}
+{"q": "How do I connect to the FollowMe-Print network printer queue?", "type": "it", "expected_source": "printer_setup.md"}
+{"q": "How do I release my held print job using my employee badge at the printer?", "type": "it", "expected_source": "printer_setup.md"}
+{"q": "What is the network path for adding Acme office printers?", "type": "it", "expected_source": "printer_setup.md"}
+{"q": "How do I use the office MFP scanner to send documents to my email?", "type": "it", "expected_source": "scan_to_email.md"}
+{"q": "Why is my scanned document not arriving in my Outlook inbox?", "type": "it", "expected_source": "scan_to_email.md"}
+{"q": "What is the maximum attachment file size limit for scan-to-email?", "type": "it", "expected_source": "scan_to_email.md"}
+{"q": "How do I access a shared team mailbox in Outlook desktop?", "type": "it", "expected_source": "shared_mailbox.md"}
+{"q": "How do I open a shared mailbox in Outlook on the web (OWA)?", "type": "it", "expected_source": "shared_mailbox.md"}
+{"q": "Difference between Send As and Send on Behalf permissions for shared mailboxes", "type": "it", "expected_source": "shared_mailbox.md"}
+{"q": "How do I install approved software from the Acme Company Portal?", "type": "it", "expected_source": "software_install.md"}
+{"q": "How do I request commercial or unlisted third-party software?", "type": "it", "expected_source": "software_install.md"}
+{"q": "Is personal file-sharing or torrent software allowed on company computers?", "type": "it", "expected_source": "software_install.md"}
+{"q": "How do I log in to corporate apps using Single Sign-On (SSO)?", "type": "it", "expected_source": "sso_login.md"}
+{"q": "How to fix SSO error 403 Forbidden - User Not Assigned to Application", "type": "it", "expected_source": "sso_login.md"}
+{"q": "SSO error SAML Response Expired or clock skew troubleshooting", "type": "it", "expected_source": "sso_login.md"}
+{"q": "VPN Error 619: A connection to the remote computer could not be established", "type": "it", "expected_source": "vpn_error_codes.md"}
+{"q": "GlobalProtect Error 514: Network connection disconnected by user or tunnel lost", "type": "it", "expected_source": "vpn_error_codes.md"}
+{"q": "VPN Error 1024: Could not connect to portal vpn.acme.example", "type": "it", "expected_source": "vpn_error_codes.md"}
+{"q": "My GlobalProtect VPN keeps disconnecting every few minutes", "type": "it", "expected_source": "vpn_guide.md"}
+{"q": "How do I reconnect the VPN client after my laptop wakes from sleep?", "type": "it", "expected_source": "vpn_guide.md"}
+{"q": "Does Acme Corp VPN use split tunnelling for personal internet traffic?", "type": "it", "expected_source": "vpn_guide.md"}
+{"q": "How do I connect my laptop to the Acme-Corp-Secure office Wi-Fi?", "type": "it", "expected_source": "wifi_setup.md"}
+{"q": "Getting error Can't connect to this network on corporate Wi-Fi", "type": "it", "expected_source": "wifi_setup.md"}
+{"q": "How do visitors or guests connect to Acme-Guest wireless internet?", "type": "it", "expected_source": "wifi_setup.md"}
+{"q": "How do I fix Windows Error 0x80070005 Access Denied?", "type": "it", "expected_source": "windows_errors.md"}
+{"q": "How to run SFC /scannow and DISM restorehealth to fix system file corruption", "type": "it", "expected_source": "windows_errors.md"}
+{"q": "What to do if my Windows 11 laptop encounters a Blue Screen of Death (BSOD)?", "type": "it", "expected_source": "windows_errors.md"}
+{"q": "What is the latest release version of macOS Sonoma?", "type": "it", "expected_source": null}
+{"q": "How do I permanently delete my personal Google account?", "type": "it", "expected_source": null}
+{"q": "What are the hardware system requirements for Windows 12?", "type": "it", "expected_source": null}
+{"q": "What is ChatGPT and how does generative AI work?", "type": "it", "expected_source": null}
+{"q": "How do I fix a paper jam in an HP LaserJet 4000 home printer?", "type": "it", "expected_source": null}
+{"q": "Hello, good morning!", "type": "small_talk", "expected_source": null}
+{"q": "Hi there, can you help me?", "type": "small_talk", "expected_source": null}
+{"q": "Thank you so much, that solved my problem!", "type": "small_talk", "expected_source": null}
+{"q": "Who created you?", "type": "small_talk", "expected_source": null}
+{"q": "Tell me a funny joke about IT support", "type": "small_talk", "expected_source": null}
+{"q": "What is the weather outside today?", "type": "small_talk", "expected_source": null}
+{"q": "How can I invest in the stock market?", "type": "small_talk", "expected_source": null}
+{"q": "Bye, have a great day!", "type": "small_talk", "expected_source": null}
+{"q": "You are super helpful, thanks!", "type": "small_talk", "expected_source": null}
+{"q": "asdfghjkl qwerty", "type": "small_talk", "expected_source": null}
