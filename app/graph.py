@@ -1,15 +1,15 @@
-from langgraph.graph import StateGraph, END
+from langgraph.graph import END, StateGraph
 
 from app.nodes import (
     State,
-    route,
-    direct,
-    retrieve_node,
-    grade_evidence,
-    web_search,
-    generate,
     check_grounding,
+    direct,
     fallback,
+    generate,
+    grade_evidence,
+    retrieve_node,
+    route,
+    web_search,
 )
 
 MAX_RETRIES = 1  # bounded retry: prevents infinite loops

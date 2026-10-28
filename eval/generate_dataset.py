@@ -169,8 +169,7 @@ def generate_dataset():
 
     target_path = Path(__file__).resolve().parent / "dataset.jsonl"
     with open(target_path, "w", encoding="utf-8") as f:
-        for entry in dataset:
-            f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+        f.writelines(json.dumps(entry, ensure_ascii=False) + "\n" for entry in dataset)
 
     print(f"Generated {len(dataset)} evaluation rows in {target_path}")
     print(f"  - In-domain KB questions: {len(KB_QUESTIONS) * 3} ({len(KB_QUESTIONS)} docs x 3)")

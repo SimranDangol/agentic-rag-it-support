@@ -1,4 +1,5 @@
 import os
+
 import requests
 import streamlit as st
 
@@ -69,7 +70,7 @@ if q:
     with st.spinner("Thinking..."):
         try:
             r = requests.post(f"{API}/chat", json={"message": q}, timeout=120).json()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
             st.error(f"Could not reach the API: {e}")
             st.stop()
 

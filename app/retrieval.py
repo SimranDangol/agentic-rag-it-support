@@ -13,7 +13,7 @@ except ModuleNotFoundError:  # pragma: no cover - optional dependency in test en
     Pinecone = None
 
 try:
-    from sentence_transformers import SentenceTransformer, CrossEncoder
+    from sentence_transformers import CrossEncoder, SentenceTransformer
 except ModuleNotFoundError:  # pragma: no cover - optional dependency in test env
     SentenceTransformer = None
     CrossEncoder = None

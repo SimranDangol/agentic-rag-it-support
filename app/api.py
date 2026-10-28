@@ -25,8 +25,8 @@ def chat(body: ChatIn):
             {"question": body.message, "retries": 0, "steps": []},
             config={"recursion_limit": 15},
         )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:  
+        raise HTTPException(status_code=500, detail=str(e)) from e
 
     return {
         "answer": out["answer"],

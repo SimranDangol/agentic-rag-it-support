@@ -82,7 +82,7 @@ def web_search(state: State) -> dict:
         return {"web_results": []}
     try:
         res = tavily.search(state["question"], max_results=4)["results"]
-    except Exception:
+    except Exception:  # noqa: BLE001
         res = []  # never crash the agent because a tool failed
     return {"web_results": res}
 
