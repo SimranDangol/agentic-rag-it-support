@@ -16,4 +16,4 @@ class EvidenceGrade(BaseModel):
 
 class GroundingGrade(BaseModel):
     grounded: Literal["yes", "no"]
-    unsupported_claims: list[str] = []
+    unsupported_claims: list[str]
