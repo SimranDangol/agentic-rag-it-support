@@ -79,6 +79,12 @@ cp .env.example .env
 python -m app.ingest
 ```
 
+This creates the Pinecone index if needed, embeds and uploads the Markdown
+documents in batches, and writes the matching chunks to `data/chunks.json` for
+local BM25 retrieval. Commit `data/chunks.json` after ingestion so Docker and CI
+can load the same knowledge-base chunks. Ingestion requires a configured
+`PINECONE_API_KEY` and the dependencies in `requirements.txt`.
+
 ### 4. Run the API
 
 ```bash
