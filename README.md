@@ -1,6 +1,6 @@
 # Enterprise IT Support Agentic RAG Copilot
 
-An agentic RAG system that routes employee IT questions across a private knowledge base, live web search, and an honest fallback — built with LangGraph, Groq, Pinecone, and Streamlit.
+An agentic RAG system that routes employee IT questions across a private knowledge base, live web search, and an honest fallback — built with LangGraph, Groq, Pinecone, FastAPI, and Next.js.
 
 ## Architecture
 
@@ -39,7 +39,7 @@ User Question
 
 | Component | Tool |
 |---|---|
-| LLM | Groq (Llama 3.1 8B + 3.3 70B) |
+| LLM | Groq (GPT-OSS 20B + 120B) |
 | Vector DB | Pinecone Starter |
 | Embeddings | all-MiniLM-L6-v2 (local) |
 | Reranker | ms-marco cross-encoder (local) |
@@ -47,7 +47,7 @@ User Question
 | Web search | Tavily |
 | Agent graph | LangGraph |
 | API | FastAPI |
-| UI | Streamlit |
+| UI | Next.js |
 | Tracing | LangSmith |
 | Evaluation | RAGAS + custom harness |
 | CI | GitHub Actions |
@@ -94,9 +94,16 @@ uvicorn app.api:app --reload
 
 ### 5. Run the UI
 
-```bash
-streamlit run ui/streamlit_app.py
+```powershell
+cd web
+pnpm install
+pnpm dev
 ```
+
+Open http://localhost:3000. The Next.js server proxies chat requests to the
+FastAPI backend at `http://127.0.0.1:8000`. Set `API_URL` in `web/.env.local`
+if the backend is hosted at a different address, then restart the Next.js
+server.
 
 ## Evaluation
 
