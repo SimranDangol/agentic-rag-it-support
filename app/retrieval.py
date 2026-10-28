@@ -6,7 +6,6 @@ from rank_bm25 import BM25Okapi
 
 from app import config
 
-
 try:
     from pinecone import Pinecone
 except ModuleNotFoundError:  # pragma: no cover - optional dependency in test env

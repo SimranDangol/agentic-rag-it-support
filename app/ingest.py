@@ -6,7 +6,6 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 from app import config
 
-
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 KB_DIR = PROJECT_ROOT / "data" / "kb"
 CHUNKS_PATH = PROJECT_ROOT / "data" / "chunks.json"

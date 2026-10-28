@@ -70,7 +70,7 @@ if q:
     with st.spinner("Thinking..."):
         try:
             r = requests.post(f"{API}/chat", json={"message": q}, timeout=120).json()
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             st.error(f"Could not reach the API: {e}")
             st.stop()
 
