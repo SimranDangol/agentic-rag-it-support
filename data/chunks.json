@@ -1,0 +1,637 @@
+[
+  {
+    "id": "account_lockout.md-0",
+    "source": "account_lockout.md",
+    "text": "# Account Lockout Resolution Guide — Acme Corp IT\n\n## Overview\nTo defend against unauthorized brute-force attacks, Acme Corp enforces an automated account lockout policy across Active Directory, Microsoft Entra ID, and Okta SSO.\n\n## Account Lockout Policy Rules\n- **Lockout Threshold**: 5 consecutive incorrect password attempts within a 15-minute window.\n- **Lockout Duration**: Accounts automatically unlock after **30 minutes** of zero authentication attempts.\n- **Scope**: A lockout prevents access to Windows login, GlobalProtect VPN, Microsoft 365 (Outlook, Teams), and corporate web applications.\n\n## Immediate Resolution Steps"
+  },
+  {
+    "id": "account_lockout.md-1",
+    "source": "account_lockout.md",
+    "text": "## Immediate Resolution Steps\n\n### Step 1: Wait for Automatic Unlock\nIf your lockout was caused by a mistyped password, wait 30 minutes without typing any credentials. If an attempt is made during the lockout window, the 30-minute timer resets."
+  },
+  {
+    "id": "account_lockout.md-2",
+    "source": "account_lockout.md",
+    "text": "### Step 2: Clear Stored Stale Credentials\nThe most frequent cause of repeated account lockouts is an old, cached password stored in Windows Credential Manager or a smartphone syncing corporate email:\n1. Click the Windows Start menu, type **Credential Manager**, and press Enter.\n2. Select **Windows Credentials**.\n3. Under **Generic Credentials**, look for entries starting with:\n   - `MicrosoftOffice16_Data`\n   - `git:https://github.acme.example`\n   - `GlobalProtect`\n   - `SSO:acme.example`\n4. Expand each item and click **Remove**."
+  },
+  {
+    "id": "account_lockout.md-3",
+    "source": "account_lockout.md",
+    "text": "- `GlobalProtect`\n   - `SSO:acme.example`\n4. Expand each item and click **Remove**.\n5. Check your mobile device (iPhone/Android mail apps). If your phone tries to fetch emails using an outdated password, it will repeatedly trigger lockouts. Update the password in your mobile mail client."
+  },
+  {
+    "id": "account_lockout.md-4",
+    "source": "account_lockout.md",
+    "text": "### Step 3: Self-Service Account Unlock via SSPR\n1. On your smartphone or a functioning workstation, visit:\n   `https://sspr.acme.example`\n2. Enter `username@acme.example`.\n3. Complete MFA authentication via Microsoft Authenticator.\n4. Select the option: **Unlock my account without changing password**."
+  },
+  {
+    "id": "account_lockout.md-5",
+    "source": "account_lockout.md",
+    "text": "## When to Contact IT Helpdesk\nIf your account remains locked out or repeatedly locks every few minutes:\n1. Call **ext. 4357** (or **+1-800-555-4357** from an external line).\n2. The technician will verify your identity via employee badge ID or manager confirmation.\n3. The technician will identify the lockout source IP/workstation using Active Directory event logs (Event ID 4740) and terminate the offending background process."
+  },
+  {
+    "id": "authenticator_migration.md-0",
+    "source": "authenticator_migration.md",
+    "text": "# Migrating to Microsoft Authenticator — Acme Corp IT\n\n## Overview\nAcme Corp IT has decommissioned support for legacy authentication apps (including Google Authenticator, Authy, and hardware SMS tokens) in favor of **Microsoft Authenticator** with cryptographic number matching. All personnel must complete migration to prevent access disruption.\n\n## Why Migrate?\n- **Phishing-Resistant MFA**: Number matching eliminates accidental prompt fatigue and push attacks.\n- **Single Sign-On Integration**: Microsoft Authenticator provides conditional access and compliance checks directly with Microsoft 365 and Acme VPN.\n- **Cloud Backup**: Enables encrypted cloud backup for fast phone replacement."
+  },
+  {
+    "id": "authenticator_migration.md-1",
+    "source": "authenticator_migration.md",
+    "text": "## Step-by-Step Migration Guide\n\n### Step 1: Prepare Your Workstation and New App\n1. On your smartphone, install **Microsoft Authenticator** from the Apple App Store or Google Play Store.\n2. On your corporate laptop, open a browser window and go to:\n   `https://mysignins.microsoft.com/security-info`\n3. Sign in with your corporate credentials (`username@acme.example`). Authenticate with your existing legacy authenticator app one final time."
+  },
+  {
+    "id": "authenticator_migration.md-2",
+    "source": "authenticator_migration.md",
+    "text": "### Step 2: Register Microsoft Authenticator\n1. Click **+ Add sign-in method** at the top of the methods list.\n2. Select **Authenticator app** from the dropdown menu and click **Add**.\n3. Follow the wizard: open Microsoft Authenticator on your phone, tap **+** -> **Work or school account** -> **Scan QR code**.\n4. Scan the QR code presented on your laptop screen.\n5. Complete the 2-digit number verification test.\n\n### Step 3: Set Default Sign-in Method\n1. Still on the Security Info page, find **Default sign-in method** near the top.\n2. Click **Change**.\n3. Select **App based authentication - notification (Microsoft Authenticator)**.\n4. Click **Confirm**."
+  },
+  {
+    "id": "authenticator_migration.md-3",
+    "source": "authenticator_migration.md",
+    "text": "### Step 4: Remove the Legacy App\n1. Locate **Google Authenticator** or **Authy** in your methods table.\n2. Click **Delete** next to it to permanently remove it from your account.\n3. You may now delete the corporate account profile from the legacy app on your phone.\n\nFor migration questions or issues during verification, contact Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "bitlocker_recovery.md-0",
+    "source": "bitlocker_recovery.md",
+    "text": "# BitLocker Drive Encryption & Recovery Key Guide — Acme Corp IT\n\n## Overview\nAll corporate Windows 11 laptops issued by Acme Corp are fully encrypted with **Microsoft BitLocker** (AES-256 bit encryption) to protect enterprise data in the event of hardware loss or theft."
+  },
+  {
+    "id": "bitlocker_recovery.md-1",
+    "source": "bitlocker_recovery.md",
+    "text": "## Why is BitLocker Prompting for a Recovery Key?\nOn rare occasions, your laptop will halt at a blue BitLocker recovery screen requesting a 48-digit numerical recovery key upon boot. Common triggers include:\n- A recent BIOS/UEFI firmware update.\n- Tampering with TPM (Trusted Platform Module) security chips.\n- Changing hardware components (replacing motherboard, RAM, or hard drive).\n- Connecting untrusted external docking stations or bootable USB devices.\n- Multiple failed Windows startup attempts.\n\n## How to Retrieve Your 48-Digit Recovery Key"
+  },
+  {
+    "id": "bitlocker_recovery.md-2",
+    "source": "bitlocker_recovery.md",
+    "text": "### Method 1: Self-Service via Microsoft 365 Account (Fastest)\nYou can retrieve your key independently using any secondary device (smartphone or tablet):\n1. On your phone, open a browser and navigate to:\n   `https://myaccount.microsoft.com/device-list`\n2. Sign in with your corporate credentials (`username@acme.example`) and complete MFA.\n3. Locate your corporate laptop in the device list.\n4. Click **View BitLocker Keys**.\n5. Find the Key ID matching the beginning characters shown on your laptop screen.\n6. Copy the **48-digit Recovery Key** (formatted as eight 6-digit blocks).\n7. Type the 48 digits on your laptop using the number keys and press Enter. Windows will boot normally."
+  },
+  {
+    "id": "bitlocker_recovery.md-3",
+    "source": "bitlocker_recovery.md",
+    "text": "### Method 2: Contacting IT Helpdesk\nIf you cannot access another device to view your recovery key:\n1. Call the emergency IT Helpdesk line at **ext. 4357** (or **+1-800-555-4357**).\n2. The technician will verify your identity via badge number and employee security questions.\n3. Read the first 8 characters of the **Recovery Key ID** displayed on your blue screen.\n4. The technician will retrieve the 48-digit key from Microsoft Intune / Entra ID and read it to you.\n\n## CRITICAL CAUTION\n**Never attempt to format, reinstall, or wipe the encrypted drive** when prompted by BitLocker. Doing so destroys all local files permanently. Always contact IT Helpdesk first."
+  },
+  {
+    "id": "calendar_sync.md-0",
+    "source": "calendar_sync.md",
+    "text": "# Outlook Calendar Synchronization Troubleshooting — Acme Corp IT\n\n## Overview\nThis troubleshooting guide addresses synchronization discrepancies between your Microsoft 365 Outlook desktop client, Outlook Web Access (OWA), and mobile devices (iOS / Android).\n\n## Common Synchronization Symptoms\n- Meeting invitations accepted on your mobile device do not appear on your desktop Outlook calendar.\n- Updates or cancellations to recurring meetings are missing.\n- Calendar displays the status message \"This folder was last updated at [outdated date/time]\" or \"Update Failed\".\n\n## Troubleshooting Desktop Outlook Calendar"
+  },
+  {
+    "id": "calendar_sync.md-1",
+    "source": "calendar_sync.md",
+    "text": "## Troubleshooting Desktop Outlook Calendar\n\n### Step 1: Force Full Folder Update\n1. Open Outlook and navigate to the **Calendar** view (`Ctrl + 2`).\n2. Switch to the **Send / Receive** tab on the ribbon.\n3. Click **Update Folder** to force immediate synchronization with Exchange Online.\n4. Click **Send/Receive All Folders** (`F9`)."
+  },
+  {
+    "id": "calendar_sync.md-2",
+    "source": "calendar_sync.md",
+    "text": "### Step 2: Clear Offline Calendar Cache\nIf specific meetings are corrupted or desynchronized:\n1. Right-click the **Calendar** under your account in the left pane -> click **Properties**.\n2. In the General tab, click **Clear Offline Items**.\n3. Click **OK**. Your calendar pane will temporarily appear empty.\n4. Press `F9` or click **Update Folder**. Outlook will download a fresh copy of all calendar events directly from Exchange Online."
+  },
+  {
+    "id": "calendar_sync.md-3",
+    "source": "calendar_sync.md",
+    "text": "### Step 3: Turn Off Shared Calendar Improvements\nIf synchronization issues involve a colleague's or executive's shared calendar:\n1. Go to **File** -> **Account Settings** -> **Account Settings**.\n2. Select your email and click **Change** -> **More Settings**.\n3. Click the **Advanced** tab.\n4. Under Microsoft 365 Features, uncheck **Turn on shared calendar improvements**.\n5. Click **OK**, restart Outlook, and re-test."
+  },
+  {
+    "id": "calendar_sync.md-4",
+    "source": "calendar_sync.md",
+    "text": "## Troubleshooting Mobile Device Calendar Sync\n1. Open the **Outlook Mobile** app on your smartphone.\n2. Tap your profile icon (top left) -> tap the **Settings** gear icon (bottom left).\n3. Under Mail Accounts, tap your Acme Corp account (`username@acme.example`).\n4. Tap **Reset Account**. The app will purge its local cache and re-sync your calendar and contacts.\n5. If the issue persists, ensure background data and calendar permissions are enabled in your phone's operating system settings.\n\nFor unresolved calendar synchronization errors, call IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "helpdesk_contacts.md-0",
+    "source": "helpdesk_contacts.md",
+    "text": "# IT Helpdesk Support Contacts & Escalation — Acme Corp IT\n\n## Overview\nThe Acme Corp Information Technology Helpdesk provides global technical assistance, hardware provisioning, incident resolution, and access management for all staff worldwide. If self-service guides do not resolve your issue, follow the procedures below to contact support.\n\n## Primary Support Channels"
+  },
+  {
+    "id": "helpdesk_contacts.md-1",
+    "source": "helpdesk_contacts.md",
+    "text": "## Primary Support Channels\n\n### 1. Telephone Support (Immediate Assistance)\n- **Internal VoIP Extension**: Dial **ext. 4357** (spells HELP on standard keypads)\n- **Direct Global Toll-Free**: **+1-800-555-4357**\n- **International Emergency Line**: **+1-212-555-0199**\n- *Operating Hours*: Phone lines are staffed 24/7/365 for Priority 1 (P1) emergencies. Standard inquiries are handled Monday through Friday, 7:00 AM – 8:00 PM EST.\n\n### 2. Email Support\n- **General Inquiries**: `helpdesk@acme.example`\n- **Security Incident Reporting**: `soc@acme.example` or `security@acme.example`\n- **Onboarding Logistics**: `onboarding-it@acme.example`"
+  },
+  {
+    "id": "helpdesk_contacts.md-2",
+    "source": "helpdesk_contacts.md",
+    "text": "### 3. Walk-Up Tech Lounges (On-Site Support)\nDrop in without an appointment for hardware troubleshooting, monitor adapters, or badge replacements:\n- **Headquarters (New York)**: Building 4, 1st Floor, Tech Bar (Mon–Fri 8:30 AM – 5:00 PM EST).\n- **San Francisco Office**: 200 Mission St, 8th Floor, Room 802 (Mon–Fri 9:00 AM – 5:00 PM PST).\n- **London Office**: 100 Bishopsgate, Floor 12 (Mon–Fri 9:00 AM – 5:00 PM GMT).\n\n## How to Submit an IT Support Ticket\n\nFor non-blocking inquiries or software and hardware requests, use the self-service ticketing portal:"
+  },
+  {
+    "id": "helpdesk_contacts.md-3",
+    "source": "helpdesk_contacts.md",
+    "text": "1. Open your browser and navigate to `https://helpdesk.acme.example`.\n2. Sign in with your corporate Acme Corp credentials via Single Sign-On (SSO).\n3. Select **Submit an Incident** or **Request Service** from the main dashboard.\n4. Choose the appropriate category (e.g., Network, Hardware, Account, or Email).\n5. In the description, include your computer hostname (`ACME-LAP-XXXX`), operating system version, and exact error code or screenshot.\n6. Select your urgency level and click **Submit**. You will receive an automated confirmation email with your incident ticket number (`INC-XXXXXXX`).\n\n## How to Escalate an Urgent Priority 1 (P1) Incident"
+  },
+  {
+    "id": "helpdesk_contacts.md-4",
+    "source": "helpdesk_contacts.md",
+    "text": "## How to Escalate an Urgent Priority 1 (P1) Incident\n\nIf an issue causes a critical business stoppage (such as whole department downtime, company-wide VPN failure, or security breach):\n\n1. Immediately call the 24/7 emergency dispatch line at **ext. 4357** or **+1-800-555-4357**.\n2. Press option **1** to flag the call as a Priority 1 Critical Incident.\n3. Inform the dispatcher of the business impact and affected systems.\n4. The dispatcher will open a P1 bridge and notify the on-call Site Reliability Engineering (SRE) team within 15 minutes."
+  },
+  {
+    "id": "helpdesk_contacts.md-5",
+    "source": "helpdesk_contacts.md",
+    "text": "## Incident Priority Levels & Target SLAs\n- **P1 - Critical**: Company-wide outage, VPN down, security breach. Response: **< 15 minutes**.\n- **P2 - High**: User completely blocked from working (e.g., BitLocker locked, corrupt OS). Response: **< 1 hour**.\n- **P3 - Medium**: Degraded performance, single application error, printer issues. Response: **< 4 hours**.\n- **P4 - Low**: General inquiry, routine hardware upgrade, future software request. Response: **< 24 hours**."
+  },
+  {
+    "id": "laptop_slow.md-0",
+    "source": "laptop_slow.md",
+    "text": "# Laptop Performance Optimization Guide — Acme Corp IT\n\n## Overview\nIf your corporate Dell Latitude or Lenovo ThinkPad laptop is running slowly, experiencing application freezing, or exhibiting high fan noise, follow this diagnostic checklist before requesting hardware replacement."
+  },
+  {
+    "id": "laptop_slow.md-1",
+    "source": "laptop_slow.md",
+    "text": "## Step 1: Diagnose Resource Consumption (Task Manager)\n1. Press `Ctrl + Shift + Esc` to open **Task Manager**.\n2. Click **More details** if in compact view.\n3. On the **Processes** tab, click the **CPU** and **Memory** headers to sort processes by highest utilization.\n4. Identify runaway processes:\n   - If Google Chrome or Microsoft Edge consumes excessive memory, close unused tabs or restart the browser.\n   - If `MsMpEng.exe` (Microsoft Defender) is utilizing high CPU, an automated antivirus background scan is in progress; allow 15 minutes for completion.\n   - If a background application is frozen, right-click it and select **End task**."
+  },
+  {
+    "id": "laptop_slow.md-2",
+    "source": "laptop_slow.md",
+    "text": "## Step 2: Manage Startup Programs\nToo many background programs launching during system boot significantly degrades performance:\n1. In Task Manager, switch to the **Startup apps** tab.\n2. Review the list of enabled programs.\n3. Right-click non-essential applications (e.g., Spotify, personal chat apps, secondary cloud utilities) and click **Disable**.\n4. *Do not disable* security components: GlobalProtect, CrowdStrike Falcon, Microsoft Intune Agent, or audio drivers."
+  },
+  {
+    "id": "laptop_slow.md-3",
+    "source": "laptop_slow.md",
+    "text": "## Step 3: Run Windows Disk Cleanup\n1. Press `Win + R`, type `cleanmgr.exe`, and press Enter.\n2. Select drive `C:` and click **OK**.\n3. Click **Clean up system files**.\n4. Check **Temporary files**, **Recycle Bin**, and **Thumbnails**.\n5. Click **OK** to purge accumulated cached files. Aim to maintain at least **20 GB of free space** on drive `C:`.\n\n## Step 4: Check for Thermal Throttling\nModern laptops automatically drop processor clock speeds when vents are obstructed:\n- Ensure laptop intake vents on the bottom and sides are unobstructed.\n- Never use laptops resting directly on beds, blankets, or soft cushions.\n- Use a laptop cooling stand or elevated docking surface."
+  },
+  {
+    "id": "laptop_slow.md-4",
+    "source": "laptop_slow.md",
+    "text": "## Step 5: System Reboot Frequency\nCorporate Windows laptops should be restarted at least **once every 7 days** to flush memory leaks and apply mandatory security patches.\n\nIf performance remains degraded after these steps, contact Helpdesk at **ext. 4357** to initiate an automated remote hardware diagnostic."
+  },
+  {
+    "id": "mailbox_full.md-0",
+    "source": "mailbox_full.md",
+    "text": "# Mailbox Full Quota Management Guide — Acme Corp IT\n\n## Overview\nAcme Corp provisions a standard **50 GB mailbox quota** for all employees on Microsoft 365 Exchange Online. When your mailbox approaches or reaches this threshold, email delivery is restricted."
+  },
+  {
+    "id": "mailbox_full.md-1",
+    "source": "mailbox_full.md",
+    "text": "## Warning Signs and Storage Thresholds\n- **45 GB (90% Warning)**: You receive an automated warning email from `postmaster@acme.example` notifying you that storage is nearing capacity.\n- **49 GB (Prohibit Send)**: Outlook prevents sending new emails. Outgoing messages remain stuck in Outbox.\n- **50 GB (Prohibit Send & Receive)**: All incoming emails bounce back to the sender with Non-Delivery Report (NDR) error code `554 5.2.2 mailbox full`.\n\n## How to Check Your Current Mailbox Size\n1. Open Outlook on Windows.\n2. Click **File** in the top-left corner.\n3. Under **Account Information**, inspect the progress bar labeled **Mailbox Cleanup**. It displays used space versus your 50 GB limit."
+  },
+  {
+    "id": "mailbox_full.md-2",
+    "source": "mailbox_full.md",
+    "text": "## Immediate Steps to Free Up Mailbox Space\n\n### Step 1: Empty Deleted Items & Junk Folders\n1. Right-click the **Deleted Items** folder in Outlook -> click **Empty Folder**.\n2. Click **Recover Deleted Items from Server** at the top of the folder. Select old, unwanted items and choose **Purge Selected Items**.\n3. Right-click the **Junk Email** folder -> click **Empty Folder**."
+  },
+  {
+    "id": "mailbox_full.md-3",
+    "source": "mailbox_full.md",
+    "text": "### Step 2: Use the Mailbox Cleanup Tool\n1. Click **File** -> **Tools** -> **Mailbox Cleanup**.\n2. Select **Find items older than** and enter **180 days**.\n3. Click **Find** to review and delete outdated messages.\n4. Select **Find items larger than** and enter **10000 KB** (10 MB). Remove emails with bulky video, CAD, or slide deck attachments. Save attachments locally or to OneDrive first."
+  },
+  {
+    "id": "mailbox_full.md-4",
+    "source": "mailbox_full.md",
+    "text": "### Step 3: Request an Online In-Place Archive Mailbox\nIf your business role requires retaining large volumes of emails beyond 50 GB:\n1. Submit an IT request via `https://service.acme.example` for **Exchange Online Archiving (EOA)**.\n2. Once provisioned by Helpdesk, an **Online Archive - [Your Name]** mailbox folder will appear in Outlook with an additional 100 GB of auto-expanding storage.\n3. Emails older than 2 years will automatically move into your archive folder nightly.\n\nFor urgent quota increases during critical deliverables, call IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "mfa_lost_phone.md-0",
+    "source": "mfa_lost_phone.md",
+    "text": "# Lost Phone or Missing MFA Recovery Procedure — Acme Corp IT\n\n## Overview\nIf you have lost, damaged, or upgraded your mobile device and cannot generate Microsoft Authenticator verification codes or receive push approvals, follow this emergency recovery procedure.\n\n## Emergency Temporary Access Pass (TAP)\n\n### What is a TAP?\nA Temporary Access Pass (TAP) is a time-limited 8-digit alphanumeric passcode generated by the IT Helpdesk that satisfies MFA requirements for up to 8 hours, allowing you to log in and register a replacement device."
+  },
+  {
+    "id": "mfa_lost_phone.md-1",
+    "source": "mfa_lost_phone.md",
+    "text": "### How to Request a Temporary Access Pass\n1. Contact the IT Helpdesk via phone:\n   - Internal Extension: **ext. 4357**\n   - External Helpline: **+1-800-555-4357**\n2. Due to strict security protocols, you must pass identity verification:\n   - Provide your Employee ID number.\n   - Provide your manager's full name and corporate email.\n   - A verification request will be dispatched to your direct manager via Slack or voice call.\n3. Once approved, the technician will read your one-time TAP code over the phone or send it to an alternate verified personal email address.\n\n## Re-registering Your New Phone"
+  },
+  {
+    "id": "mfa_lost_phone.md-2",
+    "source": "mfa_lost_phone.md",
+    "text": "## Re-registering Your New Phone\n\nOnce you have received your Temporary Access Pass:\n1. On your computer, navigate to:\n   `https://mysignins.microsoft.com/security-info`\n2. Enter your email (`username@acme.example`).\n3. When prompted for password or MFA, select **Use Temporary Access Pass instead** and enter the provided TAP.\n4. On the Security Info dashboard, locate your old phone under methods and click **Delete** to revoke its security tokens.\n5. Click **+ Add sign-in method** -> choose **Authenticator app**.\n6. Install Microsoft Authenticator on your replacement device and scan the new QR code.\n7. Test the new phone by approving the 2-digit number challenge."
+  },
+  {
+    "id": "mfa_lost_phone.md-3",
+    "source": "mfa_lost_phone.md",
+    "text": "## Stolen Device Protocol\nIf your smartphone was lost in a public location or stolen:\n1. Notify IT Security immediately at `security@acme.example` or call **ext. 4357**.\n2. The Helpdesk will immediately execute a **Revoke All Sessions** command in Entra ID, invalidating all current corporate tokens, and wipe corporate data if the device was enrolled in Microsoft Intune Mobile Device Management (MDM)."
+  },
+  {
+    "id": "mfa_setup.md-0",
+    "source": "mfa_setup.md",
+    "text": "# Multi-Factor Authentication (MFA) Setup Guide — Acme Corp IT\n\n## Overview\nMulti-Factor Authentication (MFA) is strictly mandatory for all Acme Corp personnel to access cloud resources, VPN tunnels, and email. Acme Corp has standardized on **Microsoft Authenticator** with number matching enabled. SMS and voice call verification are restricted to backup methods only.\n\n## Initial Setup Instructions\n\n### Prerequisites\n- An iOS device running iOS 15+ or Android device running Android 10+.\n- A computer with internet access to view the registration portal."
+  },
+  {
+    "id": "mfa_setup.md-1",
+    "source": "mfa_setup.md",
+    "text": "### Step-by-Step Registration\n1. On your computer, open an incognito browser window and visit:\n   `https://aka.ms/mfasetup` or `https://mfa.acme.example`.\n2. Sign in with your corporate email (`username@acme.example`) and password.\n3. When prompted \"More information required\", click **Next**.\n4. On your mobile phone, open the **Apple App Store** or **Google Play Store**, search for **Microsoft Authenticator**, and install it (published by Microsoft Corporation).\n5. Open Microsoft Authenticator on your mobile phone, accept privacy notices, and tap **Add account** -> **Work or school account**.\n6. Select **Scan a QR code**."
+  },
+  {
+    "id": "mfa_setup.md-2",
+    "source": "mfa_setup.md",
+    "text": "6. Select **Scan a QR code**.\n7. Return to your computer screen, click **Next** until the QR code appears, and scan it with your phone camera.\n8. A 2-digit number will appear on your computer screen. Enter that exact 2-digit number into the prompt on your phone and tap **Yes**.\n9. Once verified, click **Done** on your computer."
+  },
+  {
+    "id": "mfa_setup.md-3",
+    "source": "mfa_setup.md",
+    "text": "## Adding a Backup Method (Secondary Phone)\nTo avoid lockouts if your primary mobile phone is misplaced:\n1. In the security info portal (`https://mysignins.microsoft.com/security-info`), click **+ Add sign-in method**.\n2. Select **Phone** from the dropdown.\n3. Enter your personal mobile or desk phone number and choose **Text me a code**.\n4. Enter the 6-digit confirmation code.\n\n## Number Matching Security Note\nWhenever you sign in to Acme Corp systems, the login screen presents a unique 2-digit number. You must type this number into Microsoft Authenticator. Never approve an authentication prompt that you did not actively initiate; report unexpected prompts immediately to Security."
+  },
+  {
+    "id": "mfa_setup.md-4",
+    "source": "mfa_setup.md",
+    "text": "For MFA assistance or temporary bypass codes, call IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "network_faq.md-0",
+    "source": "network_faq.md",
+    "text": "# Corporate Network & Drive Mapping FAQ — Acme Corp IT\n\n## Overview\nThis guide provides solutions for accessing Acme Corp internal subnets, corporate file shares, mapped drives, and internal web portals. All internal network access requires an active physical office connection or an active **Palo Alto GlobalProtect 6.2** VPN tunnel.\n\n## Mapped Drives Not Showing After Restart\n\n### Symptom\nAfter booting your Windows 11 corporate laptop, mapped network drives (such as `H:` Personal Drive or `S:` Departmental Share) display a red 'X' or do not show up in File Explorer."
+  },
+  {
+    "id": "network_faq.md-1",
+    "source": "network_faq.md",
+    "text": "### Root Cause\nWindows boots faster than the network adapter initializes or VPN connects, causing automatic reconnection to time out."
+  },
+  {
+    "id": "network_faq.md-2",
+    "source": "network_faq.md",
+    "text": "### Resolution Steps\n1. Ensure your GlobalProtect VPN client status indicates **Connected** to `vpn.acme.example`.\n2. Open File Explorer (`Win + E`) and navigate to **This PC**.\n3. If drive `S:` has a red 'X', double-click it and enter your Acme Corp credentials (`username@acme.example`) if prompted.\n4. If the drive is missing completely, remap it via Command Prompt:\n   ```cmd\n   net use S: \\\\fileserver.acme.example\\shared /persistent:yes\n   net use H: \\\\fileserver.acme.example\\home\\%USERNAME% /persistent:yes\n   ```\n5. If command fails with \"System error 53 has occurred\", verify DNS by pinging `fileserver.acme.example`.\n\n## Cannot Reach Internal Company Website"
+  },
+  {
+    "id": "network_faq.md-3",
+    "source": "network_faq.md",
+    "text": "## Cannot Reach Internal Company Website\n\n### Symptom\nBrowsing to internal applications (such as `https://intranet.acme.example` or `https://jira.acme.example`) returns `DNS_PROBE_FINISHED_NXDOMAIN` or `ERR_CONNECTION_TIMED_OUT`."
+  },
+  {
+    "id": "network_faq.md-4",
+    "source": "network_faq.md",
+    "text": "### Step-by-Step Fix\n1. **Verify VPN Status**: Ensure GlobalProtect 6.2 is connected. Split tunneling directs `*.acme.example` and `10.0.0.0/8` subnets over the secure tunnel.\n2. **Flush Local DNS**:\n   ```cmd\n   ipconfig /flushdns\n   ```\n3. **Check Routing Table**:\n   Run `route print 10.*` in Command Prompt. You should see a route pointing to the Palo Alto virtual interface gateway.\n4. **Disable Conflicting Proxies**:\n   Open Windows Settings -> **Network & Internet** -> **Proxy**. Ensure **Automatically detect settings** is ON and manual proxy server is OFF unless advised by Network Engineering.\n5. **Clear Browser Socket Pool**:"
+  },
+  {
+    "id": "network_faq.md-5",
+    "source": "network_faq.md",
+    "text": "5. **Clear Browser Socket Pool**:\n   In Google Chrome or Microsoft Edge, navigate to `edge://net-internals/#sockets` or `chrome://net-internals/#sockets` and click **Flush socket pools**."
+  },
+  {
+    "id": "network_faq.md-6",
+    "source": "network_faq.md",
+    "text": "## Support Escalation\nIf internal services remain unreachable after completing these steps, submit a ticket at `https://helpdesk.acme.example` or call **ext. 4357**."
+  },
+  {
+    "id": "new_joiner_setup.md-0",
+    "source": "new_joiner_setup.md",
+    "text": "# New Joiner IT Onboarding & Laptop Setup — Acme Corp IT\n\n## Welcome to Acme Corp!\nThis onboarding checklist guides new employees through initial hardware unboxing, account activation, security configuration, and mandatory software deployment."
+  },
+  {
+    "id": "new_joiner_setup.md-1",
+    "source": "new_joiner_setup.md",
+    "text": "## Step 1: Initial Laptop Unboxing & Power On\n1. Unbox your company-issued Dell Latitude / Lenovo ThinkPad laptop and connect the USB-C 65W AC charger.\n2. Power on the machine and wait for the **Windows Out-of-Box Experience (OOBE)** screen.\n3. Connect the laptop to your home Wi-Fi or office network.\n4. At the prompt \"Sign in to your work or school account\", enter your temporary username and password provided in your HR welcome email (`username@acme.example`).\n5. Windows Autopilot will configure device encryption (BitLocker) and security certificates. This process takes 15–25 minutes."
+  },
+  {
+    "id": "new_joiner_setup.md-2",
+    "source": "new_joiner_setup.md",
+    "text": "## Step 2: Mandatory First-Day Configuration\n1. **Set a Permanent Password**:\n   - You will be forced to change your initial password on first login. Follow the 14-character complexity rules.\n2. **Configure Multi-Factor Authentication (MFA)**:\n   - When prompted with \"More information required\", download **Microsoft Authenticator** on your corporate or personal smartphone.\n   - Scan the on-screen QR code and approve the test notification.\n3. **Connect to GlobalProtect VPN**:\n   - Locate the GlobalProtect icon in the system tray.\n   - Portal address: `vpn.acme.example`.\n   - Log in using your new credentials."
+  },
+  {
+    "id": "new_joiner_setup.md-3",
+    "source": "new_joiner_setup.md",
+    "text": "## Step 3: Software Installation via Acme Company Portal\nPre-approved core software is deployed automatically via Microsoft Intune. To install additional development or productivity tools:\n1. Click the Windows Start button and launch **Company Portal**.\n2. Select your needed software (e.g., Slack, Zoom, VS Code, Git, Google Chrome).\n3. Click **Install**. Administrative credentials are not required for items in Company Portal.\n\n## Step 4: Email and Collaboration Tools\n1. Launch Microsoft Outlook. Your mailbox (`username@acme.example`) will automatically configure via modern authentication.\n2. Launch Microsoft Teams and Slack to join your department channels."
+  },
+  {
+    "id": "new_joiner_setup.md-4",
+    "source": "new_joiner_setup.md",
+    "text": "## Getting Help on Day One\nIf you encounter account errors, missing hardware peripherals, or need equipment setup assistance:\n- Internal Phone: **ext. 4357**\n- Direct Support Line: **+1-800-555-4357**\n- IT Onboarding Desk: `onboarding-it@acme.example`\n- IT Walk-up Kiosk: Building 4, 1st Floor (Mon–Fri 8:00 AM – 5:00 PM EST)."
+  },
+  {
+    "id": "outlook_setup.md-0",
+    "source": "outlook_setup.md",
+    "text": "# Outlook Desktop & Mobile Client Configuration — Acme Corp IT\n\n## Overview\nAcme Corp utilizes Microsoft 365 Exchange Online for corporate email, calendars, and contacts. All corporate devices must use Microsoft Outlook for desktop (Windows 11) or Outlook Mobile (iOS / Android) secured via Microsoft Intune.\n\n## Setting Up Outlook on Windows 11 Laptops"
+  },
+  {
+    "id": "outlook_setup.md-1",
+    "source": "outlook_setup.md",
+    "text": "### Automatic Setup (Modern Authentication)\n1. Click the Windows Start menu and launch **Outlook** (or run `outlook.exe`).\n2. When prompted, enter your Acme Corp email address:\n   `username@acme.example`\n3. Click **Connect**.\n4. Modern Authentication will detect your Microsoft 365 tenant automatically.\n5. In the sign-in prompt, enter your corporate password.\n6. Complete the number-matching challenge in your Microsoft Authenticator app.\n7. Ensure the checkbox **Allow my organization to manage my device** is checked, then click **OK**.\n8. Outlook will initialize your local mailbox cache (`.ost` file). This takes 5–15 minutes depending on your mailbox volume."
+  },
+  {
+    "id": "outlook_setup.md-2",
+    "source": "outlook_setup.md",
+    "text": "## Recommended Performance Settings\n- **Cached Exchange Mode**: Go to **File** -> **Account Settings** -> **Account Settings**. Double-click your account and confirm **Use Cached Exchange Mode** is enabled with the slider set to **1 year**.\n- **Hardware Acceleration**: If Outlook stutters during scrolling, navigate to **File** -> **Options** -> **Advanced** -> **Display** and check **Disable hardware graphics acceleration**."
+  },
+  {
+    "id": "outlook_setup.md-3",
+    "source": "outlook_setup.md",
+    "text": "## Configuring Outlook Mobile (iOS & Android)\nPersonal mobile mail clients (such as native iOS Apple Mail or Samsung Email) are blocked by Conditional Access policies. You must use official Outlook Mobile:\n1. Install **Microsoft Outlook** from the App Store or Google Play Store.\n2. Open Outlook and tap **Add Account**.\n3. Enter `username@acme.example` and tap **Add Account**.\n4. You will be redirected to the Acme SSO login screen. Enter your password and approve MFA.\n5. Register device management via **Microsoft Intune Company Portal** when prompted.\n6. Set a mandatory 6-digit PIN for the application."
+  },
+  {
+    "id": "outlook_setup.md-4",
+    "source": "outlook_setup.md",
+    "text": "## Getting Support\nIf Outlook displays \"Disconnected\" in the bottom status bar or fails to pass autodiscover, contact IT Helpdesk at **ext. 4357** or email **helpdesk@acme.example**."
+  },
+  {
+    "id": "password_reset.md-0",
+    "source": "password_reset.md",
+    "text": "# Self-Service Password Reset (SSPR) Guide — Acme Corp IT\n\n## Overview\nAll Acme Corp employees are required to manage their corporate Active Directory and Microsoft 365 passwords using the official Self-Service Password Reset (SSPR) portal. The IT Helpdesk does not accept password reset requests over plaintext chat or unverified phone calls."
+  },
+  {
+    "id": "password_reset.md-1",
+    "source": "password_reset.md",
+    "text": "## Password Requirements & Policy\nTo comply with Acme Corp security policy:\n- Minimum length: **14 characters**.\n- Must contain at least three of the following four categories:\n  - Uppercase letters (A–Z)\n  - Lowercase letters (a–z)\n  - Numbers (0–9)\n  - Special characters (!, @, #, $, %, etc.)\n- Cannot contain your first name, last name, or username.\n- Passwords expire every **90 days**.\n- Cannot reuse any of your previous **10 passwords**.\n\n## How to Reset a Forgotten Password"
+  },
+  {
+    "id": "password_reset.md-2",
+    "source": "password_reset.md",
+    "text": "### Scenario A: Remote User or Forgotten Windows Login Password\nIf you are locked out of your Windows laptop or forgot your password:\n1. From any secondary device (such as your smartphone or personal tablet), open a web browser and navigate to:\n   `https://passwordreset.microsoftonline.com` or `https://sspr.acme.example`.\n2. Enter your full corporate email address (`username@acme.example`) and complete the CAPTCHA.\n3. Choose your verification method:\n   - **Microsoft Authenticator Notification**: Approve the push notification on your phone.\n   - **SMS / Verification Code**: Enter the 6-digit code received on your registered mobile number."
+  },
+  {
+    "id": "password_reset.md-3",
+    "source": "password_reset.md",
+    "text": "- **SMS / Verification Code**: Enter the 6-digit code received on your registered mobile number.\n4. Enter your new password twice adhering to the 14-character policy.\n5. Click **Finish**."
+  },
+  {
+    "id": "password_reset.md-4",
+    "source": "password_reset.md",
+    "text": "### Scenario B: Synchronizing New Password to Your Laptop\nAfter resetting your password online:\n1. Connect your laptop to the internet (via Wi-Fi or mobile hotspot).\n2. On the Windows login screen, enter your **NEW** password.\n3. If remote, connect to GlobalProtect VPN immediately upon login and press `Ctrl + Alt + Del` -> click **Lock**, then unlock with your new password to synchronize cached Windows domain credentials."
+  },
+  {
+    "id": "password_reset.md-5",
+    "source": "password_reset.md",
+    "text": "## Changing an Expiring Password\nIf you receive the 14-day password expiration warning while logged in:\n1. Press `Ctrl + Alt + Delete` on your keyboard.\n2. Select **Change a password**.\n3. Enter your old password, followed by your new password twice.\n4. Press Enter. All Microsoft 365 apps will prompt for re-authentication within 15 minutes.\n\nFor immediate help or emergency access, contact IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "phishing_report.md-0",
+    "source": "phishing_report.md",
+    "text": "# Phishing Identification & Incident Reporting — Acme Corp IT Security\n\n## Overview\nPhishing and social engineering attacks are the primary vector used by adversaries to compromise corporate networks. Every employee is Acme Corp's first line of defense. This policy defines how to identify malicious communications and report them immediately."
+  },
+  {
+    "id": "phishing_report.md-1",
+    "source": "phishing_report.md",
+    "text": "## Common Indicators of Phishing Emails\nAlways inspect emails carefully for these red flags:\n- **Artificial Urgency**: Demands immediate action with threats of account suspension, unpaid invoices, or missed deliveries.\n- **Mismatched Sender Address**: Display name claims to be \"Acme IT Helpdesk\" or \"Executive Leadership\", but the underlying email domain is `@gmail.com`, `@acme-support.net`, or other external domains.\n- **Suspicious Attachments**: Unsolicited `.html`, `.iso`, `.zip`, `.exe`, or password-protected archives claiming to be invoices or wire instructions."
+  },
+  {
+    "id": "phishing_report.md-2",
+    "source": "phishing_report.md",
+    "text": "- **Deceptive Hyperlinks**: Hover your mouse cursor over hyperlinks without clicking. Verify the actual destination URL matches legitimate corporate portals (`*.acme.example`).\n- **Requests for Sensitive Information**: Acme IT will never ask for your password or MFA code via email."
+  },
+  {
+    "id": "phishing_report.md-3",
+    "source": "phishing_report.md",
+    "text": "## How to Report a Phishing Email in Outlook\n\n### Using the One-Click \"Report Phishing\" Button (Preferred)\n1. In Outlook Desktop or Outlook on the Web, open or select the suspicious message.\n2. In the top ribbon (or action bar), click the **Report Phishing** button (represented by a fishhook or shield icon).\n3. Confirm submission in the dialog box.\n4. The message will be forwarded automatically to the Security Operations Center (`soc@acme.example`), removed from your inbox, and submitted to Microsoft Defender for tenant-wide blocklisting."
+  },
+  {
+    "id": "phishing_report.md-4",
+    "source": "phishing_report.md",
+    "text": "## What to Do If You Accidentally Clicked a Link or Entered Credentials\nIf you entered your password on a suspicious site or opened an untrusted attachment:\n1. **Disconnect from the Network Immediately**:\n   - Disconnect Wi-Fi (`Win + A` -> toggle Wi-Fi OFF) or unplug your Ethernet cable. Do not power off the laptop.\n2. **Call IT Security Emergency Hotline**:\n   - Immediately call **ext. 4357** or dial **+1-800-555-4357**. Select option 1 for Security Incident.\n3. The SOC team will immediately revoke your active sessions, reset your domain password, and isolate the machine for forensic inspection."
+  },
+  {
+    "id": "printer_offline.md-0",
+    "source": "printer_offline.md",
+    "text": "# Resolving Printer Offline Errors — Acme Corp IT\n\n## Overview\nThis document guides users through troubleshooting \"Printer Offline\" errors on Windows 11 workstations when attempting to print to local departmental printers or the **FollowMe-Print** queue (`\\\\print.acme.example\\FollowMe-Print`).\n\n## Common Root Causes\n- Windows Print Spooler service hung or stopped.\n- \"Use Printer Offline\" toggle mistakenly enabled in Windows.\n- Stale print jobs jammed in the local Windows spool queue.\n- Disconnected network connection or lack of VPN connectivity when printing remotely.\n\n## Step-by-Step Resolution Procedures"
+  },
+  {
+    "id": "printer_offline.md-1",
+    "source": "printer_offline.md",
+    "text": "## Step-by-Step Resolution Procedures\n\n### Step 1: Verify Network & VPN Connection\nNetwork printers require connectivity to the corporate subnet:\n1. Ensure your laptop is connected to **Acme-Corp-Secure** Wi-Fi or hardwired Ethernet.\n2. If working remotely from home, connect to **GlobalProtect VPN** (`vpn.acme.example`). The print queue server is not accessible over public internet."
+  },
+  {
+    "id": "printer_offline.md-2",
+    "source": "printer_offline.md",
+    "text": "### Step 2: Uncheck \"Use Printer Offline\"\n1. Open Windows **Settings** -> **Bluetooth & devices** -> **Printers & scanners**.\n2. Select your printer (e.g., **FollowMe-Print**).\n3. Click **Open print queue**.\n4. In the print queue window, click **Printer** in the top menu bar.\n5. Ensure there is **NO checkmark** next to **Use Printer Offline**. If checked, click it to disable offline mode.\n6. Also ensure **Pause Printing** is unchecked."
+  },
+  {
+    "id": "printer_offline.md-3",
+    "source": "printer_offline.md",
+    "text": "### Step 3: Restart Windows Print Spooler Service\nIf the printer remains unresponsive, clear and restart the Print Spooler:\n1. Press `Win + X` and select **Terminal (Admin)** or **Command Prompt (Admin)**.\n2. Execute the following commands in sequence:\n   ```cmd\n   net stop spooler\n   del /Q /F /S \"%systemroot%\\System32\\spool\\PRINTERS\\*.*\"\n   net start spooler\n   ```\n3. This purges any stuck, corrupted print jobs from memory and restarts the printing subsystem."
+  },
+  {
+    "id": "printer_offline.md-4",
+    "source": "printer_offline.md",
+    "text": "### Step 4: Re-add the Print Queue\nIf the offline status persists:\n1. Return to **Printers & scanners**, select the problematic printer, and click **Remove**.\n2. Restart your laptop.\n3. Re-install the printer by pressing `Win + R` and entering:\n   `\\\\print.acme.example\\FollowMe-Print`\n\nIf the physical printer displays hardware errors (e.g., paper jam, out of toner, door open), call Facilities or the IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "printer_setup.md-0",
+    "source": "printer_setup.md",
+    "text": "# Network Printer Setup & FollowMe Badge Printing — Acme Corp IT\n\n## Overview\nAcme Corp utilizes a unified enterprise print environment powered by **PaperCut MF** and secure **FollowMe-Print** queues. You do not need to install individual physical printers for each floor or conference room; print jobs are sent to a single centralized virtual queue and released at any multi-function printer (MFP) using your employee NFC badge.\n\n## Connecting to the FollowMe-Print Queue (Windows 11)\n\n### Requirements\n- Connected to **Acme-Corp-Secure** Wi-Fi or hardwired office Ethernet (or connected via GlobalProtect VPN).\n- Windows 11 Enterprise managed workstation."
+  },
+  {
+    "id": "printer_setup.md-1",
+    "source": "printer_setup.md",
+    "text": "### Step-by-Step Installation\n1. Press `Win + R` on your keyboard to open the Run prompt.\n2. Type the following network print server path and press Enter:\n   ```cmd\n   \\\\print.acme.example\\FollowMe-Print\n   ```\n3. A Windows Printer Installation dialog will appear and automatically download the certified HP/Ricoh Universal Print Driver.\n4. Alternatively, install via Windows Settings:\n   - Go to **Settings** -> **Bluetooth & devices** -> **Printers & scanners**.\n   - Click **Add device**.\n   - After a few seconds, click **Add manually**.\n   - Select **Select a shared printer by name** and enter:\n     `http://print.acme.example:631/printers/FollowMe-Print`"
+  },
+  {
+    "id": "printer_setup.md-2",
+    "source": "printer_setup.md",
+    "text": "`http://print.acme.example:631/printers/FollowMe-Print`\n   - Click **Next** and finish the wizard."
+  },
+  {
+    "id": "printer_setup.md-3",
+    "source": "printer_setup.md",
+    "text": "## How to Release Your Print Jobs at the Printer\n1. Print your document from any application (Word, PDF, browser), choosing **FollowMe-Print** as the destination printer.\n2. Walk to any corporate multi-function printer located in any Acme Corp office building.\n3. Hold your employee NFC badge against the contactless card reader (marked with the card wave symbol).\n4. On your first scan, the touch screen will prompt for a one-time badge link: enter your Acme Corp username and password. Subsequent scans log you in instantly.\n5. The screen displays your pending print queue. Select **Print All** or choose individual jobs."
+  },
+  {
+    "id": "printer_setup.md-4",
+    "source": "printer_setup.md",
+    "text": "5. The screen displays your pending print queue. Select **Print All** or choose individual jobs.\n6. Press the physical or touch **Logout** button when finished to protect document confidentiality."
+  },
+  {
+    "id": "printer_setup.md-5",
+    "source": "printer_setup.md",
+    "text": "## Printing Policy\n- All print jobs default to **Black & White, Duplex (Double-Sided)** to reduce paper waste.\n- Color printing requires managerial approval in high-volume departments.\n- Unclaimed print jobs are automatically purged from the server after **24 hours**.\n\nFor toner replacement or printer assistance, contact IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "scan_to_email.md-0",
+    "source": "scan_to_email.md",
+    "text": "# Scan-to-Email Setup & Usage Guide — Acme Corp IT\n\n## Overview\nAll Acme Corp office Multi-Function Printers (MFPs) support high-resolution document scanning with automated delivery to your corporate inbox (`username@acme.example`).\n\n## How to Scan a Document to Your Email\n\n### Step 1: Authenticate at the Multi-Function Printer (MFP)\n1. Approach any Ricoh or Canon MFP on your floor.\n2. Tap your employee RFID/NFC badge on the card reader icon to authenticate.\n3. Your name and Acme Corp email address will appear at the top of the touch screen."
+  },
+  {
+    "id": "scan_to_email.md-1",
+    "source": "scan_to_email.md",
+    "text": "### Step 2: Load Your Documents\n- **Document Feeder (Multi-page documents)**: Place pages face up in the Automatic Document Feeder (ADF). Adjust the paper guides snugly.\n- **Glass Platen (Books, receipts, ID cards)**: Lift the feeder lid and place the document face down on the glass, aligned with the top-left registration arrow."
+  },
+  {
+    "id": "scan_to_email.md-2",
+    "source": "scan_to_email.md",
+    "text": "### Step 3: Configure Scan Settings\n1. On the MFP home screen, tap **Scan and Send** (or **Scan to My Email**).\n2. The destination will default automatically to your email address (`username@acme.example`).\n3. Tap **Options** to customize parameters:\n   - **Color Mode**: Auto Color, Grayscale, or Black & White.\n   - **Resolution**: 300 DPI (recommended for documents) or 600 DPI (for detailed diagrams/photos).\n   - **File Format**: Compact PDF (default), Searchable PDF (with OCR), or TIFF.\n   - **2-Sided Original**: Enable if your paper originals are double-sided.\n4. Press the green **Start** button on the physical control panel.\n\n## Troubleshooting Scan-to-Email Delivery"
+  },
+  {
+    "id": "scan_to_email.md-3",
+    "source": "scan_to_email.md",
+    "text": "## Troubleshooting Scan-to-Email Delivery\n\n### 1. Attachment File Size Limit\n- Corporate email security enforces a maximum attachment size of **25 MB**.\n- If scanning large packets (50+ pages), split the batch into smaller jobs or reduce resolution to **200 DPI Grayscale** in scan settings.\n\n### 2. Email Not Arriving\n- Scanned documents typically arrive within 1 to 3 minutes from sender `scanner-daemon@acme.example`.\n- Check your **Junk Email** folder in Outlook.\n- Verify that your corporate mailbox is not full (see `mailbox_full.md`).\n\n### 3. OCR (Searchable Text) Requirements\nIf you require searchable text, select **Searchable PDF** in file format settings before pressing Start."
+  },
+  {
+    "id": "scan_to_email.md-4",
+    "source": "scan_to_email.md",
+    "text": "For badge reader issues or printer hardware maintenance, call IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "shared_mailbox.md-0",
+    "source": "shared_mailbox.md",
+    "text": "# Shared Mailbox Access & Permissions — Acme Corp IT\n\n## Overview\nShared mailboxes (such as `billing@acme.example`, `support@acme.example`, or `sales@acme.example`) permit designated team members to read, send, and manage centralized correspondence from a single shared address without consuming an extra user license."
+  },
+  {
+    "id": "shared_mailbox.md-1",
+    "source": "shared_mailbox.md",
+    "text": "## Permissions Types Explained\n- **Read and Manage (Full Access)**: Allows you to open the shared mailbox, view all folders, mark emails as read/unread, and categorize messages. It does *not* grant permission to send email from the shared address.\n- **Send As**: Allows you to send outgoing messages where the \"From\" header strictly displays the shared mailbox name (`billing@acme.example`).\n- **Send on Behalf**: Allows you to send messages where the recipient sees: `username@acme.example on behalf of billing@acme.example`.\n\n## Accessing a Shared Mailbox in Outlook"
+  },
+  {
+    "id": "shared_mailbox.md-2",
+    "source": "shared_mailbox.md",
+    "text": "## Accessing a Shared Mailbox in Outlook\n\n### Method 1: Automatic Mapping (Default)\nWhen IT assigns you Full Access permissions in Active Directory, Microsoft 365 automatically maps the mailbox into your Outlook left sidebar beneath your primary folders within 60 minutes. Restart Outlook to accelerate discovery."
+  },
+  {
+    "id": "shared_mailbox.md-3",
+    "source": "shared_mailbox.md",
+    "text": "### Method 2: Manually Adding Shared Mailbox (If Not Auto-Mapped)\nIf the shared mailbox does not appear automatically after 1 hour:\n1. Open Outlook and click **File** -> **Account Settings** -> **Account Settings**.\n2. Select your account and click **Change**.\n3. Click **More Settings** -> switch to the **Advanced** tab.\n4. Under the **Mailboxes** section, click **Add**.\n5. Type the alias or email address of the shared mailbox (e.g., `support@acme.example`) and click **OK**.\n6. Click **Apply** -> **OK** -> **Next** -> **Finish**. Restart Outlook."
+  },
+  {
+    "id": "shared_mailbox.md-4",
+    "source": "shared_mailbox.md",
+    "text": "### Method 3: Accessing via Outlook on the Web (OWA)\n1. Navigate to `https://outlook.office.com` and sign in.\n2. Click your circular profile icon in the top-right corner.\n3. Select **Open another mailbox**.\n4. Enter the shared mailbox email and click **Open**. The shared mailbox opens in a new dedicated tab.\n\n## Requesting Access or Permission Changes\nTo request access to an existing shared mailbox:\n1. Have your team lead submit an approval ticket at `https://service.acme.example`.\n2. Specify whether **Full Access**, **Send As**, or both are required.\n3. Helpdesk processes approved tickets within 4 business hours. Contact **ext. 4357** for P1 escalations."
+  },
+  {
+    "id": "software_install.md-0",
+    "source": "software_install.md",
+    "text": "# Software Installation & Approval Policy — Acme Corp IT\n\n## Overview\nTo safeguard intellectual property, protect customer data, and maintain SOC 2 Type II compliance, standard user accounts on Acme Corp laptops do not possess local administrative privileges. All software installations must proceed through authorized channels."
+  },
+  {
+    "id": "software_install.md-1",
+    "source": "software_install.md",
+    "text": "## Installing Pre-Approved Software via Company Portal\nAcme Corp maintains a vast library of pre-packaged, pre-approved software ready for one-click installation without needing administrative rights:\n1. Click the Windows Start menu.\n2. Type **Company Portal** and press Enter.\n3. Browse the application catalog or use the search bar (top right).\n4. Popular pre-approved applications available:\n   - **Productivity**: Notion, Miro, Zoom, Slack, Microsoft Power BI.\n   - **Development**: Visual Studio Code, Git for Windows, Node.js LTS, Docker Desktop, PyCharm Community, Postman.\n   - **Browsers**: Google Chrome Enterprise, Mozilla Firefox Enterprise."
+  },
+  {
+    "id": "software_install.md-2",
+    "source": "software_install.md",
+    "text": "- **Browsers**: Google Chrome Enterprise, Mozilla Firefox Enterprise.\n5. Click on the desired software and click **Install**.\n6. The Microsoft Intune agent will download, verify signatures, and install the package quietly in the background."
+  },
+  {
+    "id": "software_install.md-3",
+    "source": "software_install.md",
+    "text": "## Requesting Unlisted or Commercial Software\nIf your day-to-day workflow requires software not currently present in the Company Portal catalog:\n1. Navigate to the IT Service Catalog at `https://service.acme.example/software-request`.\n2. Complete the software request form:\n   - Exact software name and vendor URL.\n   - Justification and team business case.\n   - Number of required licenses and cost center billing code.\n3. Your direct manager will receive an automated approval notification.\n4. The IT Security and Legal teams will review the vendor's EULA, SOC 2 report, and data privacy policies (typically 3–5 business days)."
+  },
+  {
+    "id": "software_install.md-4",
+    "source": "software_install.md",
+    "text": "5. Once approved, IT Engineering packages the software into Company Portal or dispatches an engineer to install it."
+  },
+  {
+    "id": "software_install.md-5",
+    "source": "software_install.md",
+    "text": "## Strictly Prohibited Software\nThe following application classes are strictly forbidden on Acme Corp devices:\n- Unauthorized peer-to-peer (P2P) file sharing utilities (e.g., BitTorrent).\n- Unapproved third-party VPNs or proxy bypassers (e.g., NordVPN, ExpressVPN).\n- Cryptocurrency miners and unauthorized remote access tools (e.g., TeamViewer, AnyDesk).\n\nQuestions regarding software compliance should be directed to `security@acme.example` or **ext. 4357**."
+  },
+  {
+    "id": "sso_login.md-0",
+    "source": "sso_login.md",
+    "text": "# Single Sign-On (SSO) Login Guide — Acme Corp IT\n\n## Overview\nAcme Corp uses Okta and Microsoft Entra ID for centralized Single Sign-On (SSO). A single set of corporate credentials provides access to all authorized enterprise applications, including Workday, Slack, Jira, GitHub Enterprise, and Google Workspace."
+  },
+  {
+    "id": "sso_login.md-1",
+    "source": "sso_login.md",
+    "text": "## Accessing the SSO Portal\n1. Open your web browser and navigate to the Acme Corp SSO dashboard:\n   `https://sso.acme.example`\n2. Enter your primary Acme Corp email address:\n   `username@acme.example`\n3. Click **Next** and enter your Active Directory password.\n4. Complete Multi-Factor Authentication (MFA) via Microsoft Authenticator push notification or number matching.\n5. Once authenticated, your personalized dashboard will display your assigned enterprise applications.\n\n## Troubleshooting Common SSO Errors"
+  },
+  {
+    "id": "sso_login.md-2",
+    "source": "sso_login.md",
+    "text": "## Troubleshooting Common SSO Errors\n\n### Error: \"403 Forbidden - User Not Assigned to Application\"\n- **Cause**: Your account does not possess the required Active Directory security group role for this specific application.\n- **Resolution**:\n  1. Have your team manager submit a role-assignment request via ServiceNow at `https://service.acme.example`.\n  2. Approvals are processed automatically every hour; once approved, log out of SSO and log back in."
+  },
+  {
+    "id": "sso_login.md-3",
+    "source": "sso_login.md",
+    "text": "### Error: \"SAML Response Expired / Clock Skew\"\n- **Cause**: Your laptop's local system time is out of sync with Acme Corp domain controllers by more than 3 minutes.\n- **Resolution**:\n  1. Open Windows Settings -> **Time & Language** -> **Date & Time**.\n  2. Toggle **Set time automatically** to ON.\n  3. Click the button labeled **Sync now** under Additional settings.\n  4. Close your browser completely and retry accessing `https://sso.acme.example`."
+  },
+  {
+    "id": "sso_login.md-4",
+    "source": "sso_login.md",
+    "text": "### Seamless SSO in Google Chrome and Microsoft Edge\nTo prevent repetitive password prompts on corporate Windows 11 machines:\n1. Ensure your browser profile is signed in with your `@acme.example` account.\n2. In Edge, enable **Allow single sign-on for work or school sites using this profile** under Settings -> Profiles.\n\n## Escalation\nIf you experience persistent authentication loops or session timeouts, clear your browser cookies for `*.acme.example` or contact IT Support at **ext. 4357**."
+  },
+  {
+    "id": "vpn_error_codes.md-0",
+    "source": "vpn_error_codes.md",
+    "text": "# GlobalProtect VPN Error Codes & Troubleshooting — Acme Corp IT\n\n## Overview\nThis document details common error codes encountered when connecting to Acme Corp's virtual private network via **Palo Alto GlobalProtect 6.2**. If troubleshooting steps do not resolve the issue, contact the IT Helpdesk at **ext. 4357** or email **helpdesk@acme.example**.\n\n## Error Codes and Resolutions"
+  },
+  {
+    "id": "vpn_error_codes.md-1",
+    "source": "vpn_error_codes.md",
+    "text": "### Error 619: Port Blocked or Connection Dropped\n- **Symptom**: Connection reaches 95% and terminates with \"A connection to the remote computer could not be established (Error 619)\".\n- **Root Cause**: The remote network, home router, or ISP is blocking IPsec ports (UDP 500, UDP 4500) or SSL port 443. This is prevalent on hotel, airport, or cafe public networks.\n- **Troubleshooting Steps**:\n  1. Open GlobalProtect, click the **Gear** icon -> **Settings** -> **Connection**.\n  2. Enable the **SSL Fallback** checkbox to force connection over TLS port 443.\n  3. Restart your home wireless router or temporarily switch to your corporate mobile hotspot."
+  },
+  {
+    "id": "vpn_error_codes.md-2",
+    "source": "vpn_error_codes.md",
+    "text": "3. Restart your home wireless router or temporarily switch to your corporate mobile hotspot.\n  4. Ensure third-party local firewalls permit outbound traffic for `PanGPA.exe` located at `C:\\Program Files\\Palo Alto Networks\\GlobalProtect`."
+  },
+  {
+    "id": "vpn_error_codes.md-3",
+    "source": "vpn_error_codes.md",
+    "text": "### Error 514: Virtual Network Adapter Failure\n- **Symptom**: \"Network connection disconnected by user or tunnel lost (Error 514)\".\n- **Root Cause**: The virtual network interface driver (PangoP Virtual Adapter) has locked or conflicted with Windows networking.\n- **Troubleshooting Steps**:\n  1. Press `Win + X` and select **Device Manager** (`devmgmt.msc`).\n  2. Expand the **Network adapters** section.\n  3. Locate **PangoP Virtual Adapter**, right-click it, and select **Disable device**.\n  4. Wait 5 seconds, right-click again, and choose **Enable device**.\n  5. Return to GlobalProtect and click **Connect**."
+  },
+  {
+    "id": "vpn_error_codes.md-4",
+    "source": "vpn_error_codes.md",
+    "text": "### Error 1024: Portal Unreachable\n- **Symptom**: \"Could not connect to portal vpn.acme.example (Error 1024)\".\n- **Root Cause**: DNS resolution failure or captive portal interception.\n- **Troubleshooting Steps**:\n  1. Verify general internet connectivity by browsing to an external website.\n  2. Open Command Prompt as Administrator and flush the DNS cache:\n     ```cmd\n     ipconfig /flushdns\n     ```\n  3. Verify the Portal Address in GlobalProtect is strictly set to `vpn.acme.example`.\n  4. Complete any browser-based captive portal login required by public Wi-Fi before connecting."
+  },
+  {
+    "id": "vpn_error_codes.md-5",
+    "source": "vpn_error_codes.md",
+    "text": "### Error 403: Forbidden or Account Suspended\n- **Symptom**: \"Authentication failed: Account not authorized for VPN access (Error 403)\".\n- **Root Cause**: Your account is either locked out, expired, or lacking Active Directory VPN group membership.\n- **Troubleshooting Steps**:\n  1. Confirm your password validity via `https://sso.acme.example`.\n  2. Contact your manager to verify VPN security group approval in Workday.\n  3. Reach out to Helpdesk at ext. 4357 for account unlock or re-provisioning."
+  },
+  {
+    "id": "vpn_guide.md-0",
+    "source": "vpn_guide.md",
+    "text": "# VPN Connection Guide — Acme Corp IT\n\n## Overview\nAcme Corp uses **Palo Alto GlobalProtect 6.2** as its VPN client. All remote employees must connect via VPN to access internal systems, shared drives, and the intranet.\n\n## Prerequisites\n- GlobalProtect 6.2 installed on your laptop (contact helpdesk ext. 4357 if not installed)\n- Valid Acme Corp credentials (username@acme.example)\n- MFA set up on Microsoft Authenticator\n\n## Connecting to VPN"
+  },
+  {
+    "id": "vpn_guide.md-1",
+    "source": "vpn_guide.md",
+    "text": "## Connecting to VPN\n\n1. Click the **GlobalProtect icon** in the system tray (bottom-right, looks like a globe).\n2. In the portal address field, enter: `vpn.acme.example`\n3. Click **Connect**.\n4. Enter your Acme Corp username and password.\n5. Approve the MFA push notification on your Microsoft Authenticator app.\n6. Wait for the status to show **Connected**. This takes 5–15 seconds.\n\n## VPN Keeps Disconnecting\n\nIf your VPN disconnects repeatedly (every few minutes), follow these steps:"
+  },
+  {
+    "id": "vpn_guide.md-2",
+    "source": "vpn_guide.md",
+    "text": "1. **Check your internet connection** — open a browser and visit a public site. If that also fails, the issue is your network, not VPN.\n2. **Switch networks** — if on public Wi-Fi, switch to a mobile hotspot or home network. Public networks often block VPN protocols.\n3. **Restart GlobalProtect** — right-click the tray icon → **Disable** → wait 10 seconds → **Enable**.\n4. **Check the gateway** — open GlobalProtect → click the gear icon → confirm Gateway is set to `vpn.acme.example`.\n5. **Flush DNS** — open Command Prompt as Administrator and run:\n   ```\n   ipconfig /flushdns\n   ```"
+  },
+  {
+    "id": "vpn_guide.md-3",
+    "source": "vpn_guide.md",
+    "text": "```\n   ipconfig /flushdns\n   ```\n6. **Reinstall the client** — if disconnections persist, uninstall GlobalProtect, restart your laptop, then reinstall from `\\\\acme-software\\VPN\\GlobalProtect-6.2.msi`."
+  },
+  {
+    "id": "vpn_guide.md-4",
+    "source": "vpn_guide.md",
+    "text": "## Reconnecting After Sleep or Hibernate\n\nWindows sometimes drops the VPN tunnel when the laptop wakes from sleep.\n\n1. Click the GlobalProtect tray icon.\n2. If status shows **Disconnected**, click **Connect**.\n3. If Connect is greyed out, click **Disable**, wait 5 seconds, then **Enable**.\n4. Re-enter credentials if prompted.\n\n## Split Tunnelling\n\nAcme Corp uses **split tunnelling** — only traffic to internal resources (10.0.0.0/8 and acme.example domains) goes through VPN. All other traffic (YouTube, Spotify, etc.) uses your local internet connection.\n\n## When to Contact Helpdesk"
+  },
+  {
+    "id": "vpn_guide.md-5",
+    "source": "vpn_guide.md",
+    "text": "## When to Contact Helpdesk\n\nCall **ext. 4357** or email **helpdesk@acme.example** if:\n- You receive an error code (see `vpn_error_codes.md`)\n- VPN connects but you cannot reach internal resources\n- You need GlobalProtect installed on a new device\n- You are travelling internationally and VPN is blocked in your country"
+  },
+  {
+    "id": "wifi_setup.md-0",
+    "source": "wifi_setup.md",
+    "text": "# Wi-Fi Setup and Troubleshooting — Acme Corp IT\n\n## Overview\nAcme Corp provides two secure wireless networks across all global offices: **Acme-Corp-Secure** (for enterprise-managed laptops) and **Acme-Guest** (for visitors and personal mobile devices).\n\n## Connecting to Acme-Corp-Secure (Windows 11)\n\n### Requirements\n- Managed Acme Corp laptop running Windows 11 Enterprise.\n- Active Directory domain credentials (`username@acme.example`).\n- Valid machine certificate issued by Acme Corp Internal Certificate Authority."
+  },
+  {
+    "id": "wifi_setup.md-1",
+    "source": "wifi_setup.md",
+    "text": "### Step-by-Step Connection Instructions\n1. Click the **Network / Wi-Fi** icon on the bottom right of the Windows taskbar (`Win + A`).\n2. Select the arrow next to the Wi-Fi icon to view available wireless networks.\n3. Select **Acme-Corp-Secure** and ensure **Connect automatically** is checked.\n4. Click **Connect**.\n5. When prompted for credentials:\n   - Username: Enter your corporate email (`username@acme.example`).\n   - Password: Enter your current Active Directory password.\n6. If prompted to accept the certificate issued by `radius.acme.example`, click **Connect**.\n7. Once connected, your IP address will automatically be assigned from the corporate DHCP subnet (`10.20.x.x`)."
+  },
+  {
+    "id": "wifi_setup.md-2",
+    "source": "wifi_setup.md",
+    "text": "## Troubleshooting Wi-Fi Connection Failures"
+  },
+  {
+    "id": "wifi_setup.md-3",
+    "source": "wifi_setup.md",
+    "text": "### Symptom: \"Can't connect to this network\"\nIf Windows reports an inability to connect to Acme-Corp-Secure:\n1. **Forget the Network**:\n   - Go to **Settings** -> **Network & Internet** -> **Wi-Fi** -> **Manage known networks**.\n   - Find **Acme-Corp-Secure** and click **Forget**.\n   - Restart your Wi-Fi adapter using the toggle switch.\n   - Re-select **Acme-Corp-Secure** and enter your credentials again.\n2. **Reset Network Stack**:\n   Open Command Prompt as Administrator and execute:\n   ```cmd\n   netsh winsock reset\n   netsh int ip reset\n   ipconfig /release\n   ipconfig /renew\n   ```\n   Restart your computer when finished.\n3. **Verify Machine Certificate**:"
+  },
+  {
+    "id": "wifi_setup.md-4",
+    "source": "wifi_setup.md",
+    "text": "```\n   Restart your computer when finished.\n3. **Verify Machine Certificate**:\n   Press `Win + R`, enter `certmgr.msc`. Under **Personal** -> **Certificates**, verify that a valid certificate from `Acme-Root-CA` exists and is not expired. If missing, connect via Ethernet cable to receive Group Policy certificate updates."
+  },
+  {
+    "id": "wifi_setup.md-5",
+    "source": "wifi_setup.md",
+    "text": "## Guest Wi-Fi Usage\nFor contractors and guests, connect to **Acme-Guest**. Upon connection, a captive portal opens automatically. Enter your sponsor's email to generate an SMS access PIN. Bandwidth is limited to 20 Mbps and internal intranet resources are blocked.\n\nFor assistance, contact the on-site technician or call IT Helpdesk at **ext. 4357**."
+  },
+  {
+    "id": "windows_errors.md-0",
+    "source": "windows_errors.md",
+    "text": "# Common Windows Errors & Blue Screen Troubleshooting — Acme Corp IT\n\n## Overview\nThis reference guide details troubleshooting protocols for frequent Windows 11 Enterprise operating system errors encountered on Acme Corp managed laptops, including permission failures, Windows Update issues, and Blue Screen of Death (BSOD) stop codes.\n\n## Troubleshooting Error 0x80070005 (Access Denied)\n\n### Root Cause\nError code `0x80070005` translates directly to `ERROR_ACCESS_DENIED`. It occurs when Windows Update, Microsoft Intune, or a software installer lacks administrative write permissions to critical directories (such as `C:\\Program Files` or the Windows Registry `HKLM\\SOFTWARE`)."
+  },
+  {
+    "id": "windows_errors.md-1",
+    "source": "windows_errors.md",
+    "text": "### Resolution Procedure for Error 0x80070005:\n1. **Reboot and Re-authenticate**: Often, user tokens are temporarily expired. Reboot the machine and log in while connected to corporate Wi-Fi or GlobalProtect VPN.\n2. **Clear the Windows Update Cache**:\n   Open Command Prompt as Administrator and run:\n   ```cmd\n   net stop wuauserv\n   net stop bits\n   rename %systemroot%\\SoftwareDistribution SoftwareDistribution.bak\n   rename %systemroot%\\System32\\catroot2 catroot2.bak\n   net start wuauserv\n   net start bits\n   ```\n3. **Reset Component Permissions**:\n   Open PowerShell as Administrator and run:\n   ```powershell\n   wuauclt /resetauthorization /detectnow\n   ```"
+  },
+  {
+    "id": "windows_errors.md-2",
+    "source": "windows_errors.md",
+    "text": "```powershell\n   wuauclt /resetauthorization /detectnow\n   ```\n4. If installing approved corporate software, ensure you trigger installation via **Company Portal** rather than running manual setup files that require local admin rights."
+  },
+  {
+    "id": "windows_errors.md-3",
+    "source": "windows_errors.md",
+    "text": "## System File Corruption (SFC & DISM)\nIf Windows applications crash intermittently or throw `0x80004005` or `0x80240020`:\n1. Open Command Prompt as Administrator.\n2. Run the Deployment Image Servicing and Management repair:\n   ```cmd\n   DISM /Online /Cleanup-Image /RestoreHealth\n   ```\n3. Run the System File Checker scan:\n   ```cmd\n   sfc /scannow\n   ```\n4. Allow the scan to reach 100%. If corrupted files are found and repaired, restart your computer."
+  },
+  {
+    "id": "windows_errors.md-4",
+    "source": "windows_errors.md",
+    "text": "## Blue Screen of Death (BSOD) Protocols\nIf your laptop encounters a blue screen crash (`CRITICAL_PROCESS_DIED`, `KERNEL_DATA_INPAGE_ERROR`):\n1. Note the specific Stop Code displayed on screen.\n2. Disconnect external USB docking stations, external monitors, or dongles.\n3. Power on the laptop while holding the power button for 10 seconds to initiate a full hardware reset.\n4. If the machine fails to boot into Windows, contact IT Helpdesk at **ext. 4357** immediately for hardware diagnostics or laptop replacement."
+  }
+]
