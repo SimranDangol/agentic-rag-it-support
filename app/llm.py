@@ -14,9 +14,21 @@ def _make_llm(model_name: str, temperature: float):
 fast = _make_llm(config.FAST_MODEL, 0)
 big = _make_llm(config.BIG_MODEL, 0.1)
 
-router_llm = fast.with_structured_output(RouteDecision) if fast is not None else None
-evidence_llm = fast.with_structured_output(EvidenceGrade) if fast is not None else None
-grounding_llm = fast.with_structured_output(GroundingGrade) if fast is not None else None
+router_llm = (
+    fast.with_structured_output(RouteDecision, method="json_schema", strict=True)
+    if fast is not None
+    else None
+)
+evidence_llm = (
+    fast.with_structured_output(EvidenceGrade, method="json_schema", strict=True)
+    if fast is not None
+    else None
+)
+grounding_llm = (
+    fast.with_structured_output(GroundingGrade, method="json_schema", strict=True)
+    if fast is not None
+    else None
+)
 
 
 def require_llm(llm_name: str):
