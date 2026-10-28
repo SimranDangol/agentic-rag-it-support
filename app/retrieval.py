@@ -6,14 +6,13 @@ from rank_bm25 import BM25Okapi
 
 from app import config
 
-
 try:
     from pinecone import Pinecone
 except ModuleNotFoundError:  # pragma: no cover - optional dependency in test env
     Pinecone = None
 
 try:
-    from sentence_transformers import SentenceTransformer, CrossEncoder
+    from sentence_transformers import CrossEncoder, SentenceTransformer
 except ModuleNotFoundError:  # pragma: no cover - optional dependency in test env
     SentenceTransformer = None
     CrossEncoder = None

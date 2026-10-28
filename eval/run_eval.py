@@ -3,14 +3,13 @@ import json
 import sys
 import time
 
-import pandas as pd
 from pydantic import BaseModel
 
 from app import config
-from app.retrieval import retrieve
-from app.nodes import route
 from app.graph import graph
 from app.llm import big
+from app.nodes import route
+from app.retrieval import retrieve
 
 
 class ClaimCheck(BaseModel):
@@ -23,11 +22,8 @@ judge = big.with_structured_output(ClaimCheck)
 
 
 def load(n: int) -> list[dict]:
-    rows = [
-        json.loads(line)
-        for line in open("eval/dataset.jsonl", encoding="utf-8")
-        if line.strip()
-    ]
+    with open("eval/dataset.jsonl", encoding="utf-8") as f:
+        rows = [json.loads(line) for line in f if line.strip()]
     return rows[:n] if n else rows
 
 
@@ -100,7 +96,8 @@ if __name__ == "__main__":
         f.write(json.dumps(res) + "\n")
 
     if a.gate:
-        th = json.load(open("eval/thresholds.json"))
+        with open("eval/thresholds.json", encoding="utf-8") as f:
+            th = json.load(f)
         fails = [
             k
             for k, v in th.items()
