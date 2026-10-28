@@ -14,8 +14,8 @@ PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
 
 INDEX_NAME = "it-support-kb"
-FAST_MODEL = "llama-3.1-8b-instant"   # router + graders
-BIG_MODEL = "llama-3.3-70b-versatile"  # answers
+FAST_MODEL = "openai/gpt-oss-20b"  # router + graders
+BIG_MODEL = "openai/gpt-oss-120b"  # answers
 EMBED_MODEL = "all-MiniLM-L6-v2"       # 384 dimensions
 EMBED_DIMENSION = 384
 RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
