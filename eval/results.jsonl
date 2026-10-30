@@ -1,0 +1,1 @@
+{"tag": "baseline", "hybrid": false, "rerank": false, "grounding": false, "hit_rate_at_4": 1.0, "routing_acc": 1.0, "avg_latency_s": 7.74, "unsupported_pct": 10.6}
