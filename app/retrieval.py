@@ -56,9 +56,13 @@ def get_reranker():
 
 def get_index():
     global _index
-    key = config.PINECONE_API_KEY.strip()
+    key = config.PINECONE_API_KEY
     if _index is None and Pinecone is not None and key:
-        _index = Pinecone(api_key=key).Index(config.INDEX_NAME)
+        try:
+            _index = Pinecone(api_key=key).Index(config.INDEX_NAME)
+        except Exception as e:
+            print(f"Warning: Pinecone initialization skipped ({e}). Falling back to BM25 search.", flush=True)
+            _index = None
     return _index
 
 
