@@ -35,18 +35,39 @@ CHUNKS = _load_chunks()
 BY_ID = {c["id"]: c for c in CHUNKS}
 bm25 = BM25Okapi([tok(c["text"]) for c in CHUNKS]) if CHUNKS else None
 
-embedder = SentenceTransformer(config.EMBED_MODEL) if SentenceTransformer is not None else None
-reranker = CrossEncoder(config.RERANK_MODEL) if CrossEncoder is not None else None
-index = None
-if Pinecone is not None and config.PINECONE_API_KEY:
-    index = Pinecone(api_key=config.PINECONE_API_KEY).Index(config.INDEX_NAME)
+_embedder = None
+_reranker = None
+_index = None
+
+
+def get_embedder():
+    global _embedder
+    if _embedder is None and SentenceTransformer is not None:
+        _embedder = SentenceTransformer(config.EMBED_MODEL)
+    return _embedder
+
+
+def get_reranker():
+    global _reranker
+    if _reranker is None and CrossEncoder is not None:
+        _reranker = CrossEncoder(config.RERANK_MODEL)
+    return _reranker
+
+
+def get_index():
+    global _index
+    if _index is None and Pinecone is not None and config.PINECONE_API_KEY:
+        _index = Pinecone(api_key=config.PINECONE_API_KEY).Index(config.INDEX_NAME)
+    return _index
 
 
 def vector_search(q: str, n: int = 20) -> list[str]:
-    if embedder is None or index is None:
+    emb = get_embedder()
+    idx = get_index()
+    if emb is None or idx is None:
         return []
-    v = embedder.encode(q).tolist()
-    res = index.query(vector=v, top_k=n, include_metadata=True)
+    v = emb.encode(q).tolist()
+    res = idx.query(vector=v, top_k=n, include_metadata=True)
     return [m["id"] for m in res["matches"]]
 
 
@@ -72,9 +93,21 @@ def retrieve(q: str, k: int = config.TOP_K) -> list[dict]:
     ids = rrf([vec, bm25_search(q)])[:20] if config.USE_HYBRID and vec else vec or bm25_search(q)
     cands = [BY_ID[i] for i in ids if i in BY_ID]
 
-    if config.USE_RERANK and cands and reranker is not None:
-        scores = reranker.predict([(q, c["text"]) for c in cands])
-        ranked = sorted(zip(scores, cands), key=lambda x: x[0], reverse=True)
-        cands = [c for _, c in ranked]
+    if config.USE_RERANK and cands:
+        rr = get_reranker()
+        if rr is not None:
+            scores = rr.predict([(q, c["text"]) for c in cands])
+            ranked = sorted(zip(scores, cands), key=lambda x: x[0], reverse=True)
+            cands = [c for _, c in ranked]
 
     return cands[:k]
+
+
+def __getattr__(name):
+    if name == "embedder":
+        return get_embedder()
+    if name == "reranker":
+        return get_reranker()
+    if name == "index":
+        return get_index()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
