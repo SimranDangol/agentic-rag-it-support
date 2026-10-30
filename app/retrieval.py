@@ -56,8 +56,9 @@ def get_reranker():
 
 def get_index():
     global _index
-    if _index is None and Pinecone is not None and config.PINECONE_API_KEY:
-        _index = Pinecone(api_key=config.PINECONE_API_KEY).Index(config.INDEX_NAME)
+    key = config.PINECONE_API_KEY.strip()
+    if _index is None and Pinecone is not None and key:
+        _index = Pinecone(api_key=key).Index(config.INDEX_NAME)
     return _index
 
 

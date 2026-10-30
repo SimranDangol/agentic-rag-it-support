@@ -9,9 +9,9 @@ if os.path.exists("F:/"):
     os.environ.setdefault("HF_HOME", "F:/hf_cache")
     os.environ.setdefault("TORCH_HOME", "F:/torch_cache")
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "")
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+PINECONE_API_KEY = os.getenv("PINECONE_API_KEY", "").strip()
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "").strip()
 
 INDEX_NAME = "it-support-kb"
 FAST_MODEL = "openai/gpt-oss-20b"  # router + graders
