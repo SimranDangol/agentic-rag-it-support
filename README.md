@@ -1,5 +1,7 @@
 # Enterprise IT Support Agentic RAG Copilot
 
+[![CI](https://github.com/SimranDangol/agentic-rag-it-support/actions/workflows/ci.yml/badge.svg)](https://github.com/SimranDangol/agentic-rag-it-support/actions/workflows/ci.yml)
+
 An agentic RAG system that routes employee IT questions across a private knowledge base, live web search, and an honest fallback — built with LangGraph, Groq, Pinecone, FastAPI, and Next.js.
 
 ## Architecture
