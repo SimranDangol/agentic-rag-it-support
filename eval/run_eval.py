@@ -25,20 +25,21 @@ judge = (
 )
 
 
-def invoke_with_retry(fn, *args, max_retries=3, **kwargs):
+def invoke_with_retry(fn, *args, max_retries=5, **kwargs):
     for attempt in range(max_retries):
         try:
             return fn(*args, **kwargs)
         except Exception as e:
             err_msg = str(e).lower()
             if "429" in err_msg or "rate_limit" in err_msg:
-                wait = 6 * (attempt + 1)
+                wait = 10 * (attempt + 1)
                 print(f"  [Rate limit hit, waiting {wait}s before retry {attempt + 1}/{max_retries}...]", flush=True)
                 time.sleep(wait)
             elif attempt == max_retries - 1:
                 raise
             else:
                 time.sleep(2)
+    raise RuntimeError(f"Exceeded {max_retries} retries due to persistent rate limiting.")
 
 
 def load(n: int) -> list[dict]:
@@ -90,8 +91,8 @@ def answer_quality(rows: list[dict]) -> dict:
             )
             elapsed = time.time() - t
             lat.append(elapsed)
-            if out.get("context") and judge is not None:
-                time.sleep(1)
+            if out and out.get("context") and judge is not None:
+                time.sleep(2)
                 c = invoke_with_retry(
                     judge.invoke,
                     f"Context:\n{out['context']}\n\nAnswer:\n{out['answer']}\n\n"
@@ -106,14 +107,14 @@ def answer_quality(rows: list[dict]) -> dict:
                         f"Latency: {elapsed:.2f}s | Claims: {c.total_claims} (Unsupported: {c.unsupported_claims})",
                         flush=True,
                     )
-            else:
+            elif out:
                 print(
                     f"  [{i+1}/{len(it_rows)}] Path: {out.get('path', 'UNKNOWN')} | Latency: {elapsed:.2f}s",
                     flush=True,
                 )
         except Exception as e:
             print(f"  [{i+1}/{len(it_rows)}] Warning for query '{r['q']}': {e}", flush=True)
-        time.sleep(1.5)
+        time.sleep(2.5)
 
     return {
         "avg_latency_s": round(sum(lat) / len(lat), 2) if lat else 0,
