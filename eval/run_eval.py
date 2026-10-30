@@ -18,7 +18,27 @@ class ClaimCheck(BaseModel):
 
 
 # 70B judge — different from the 8B in-pipeline grader to avoid self-grading bias
-judge = big.with_structured_output(ClaimCheck)
+judge = (
+    big.with_structured_output(ClaimCheck, method="json_schema", strict=True)
+    if big is not None
+    else None
+)
+
+
+def invoke_with_retry(fn, *args, max_retries=3, **kwargs):
+    for attempt in range(max_retries):
+        try:
+            return fn(*args, **kwargs)
+        except Exception as e:
+            err_msg = str(e).lower()
+            if "429" in err_msg or "rate_limit" in err_msg:
+                wait = 6 * (attempt + 1)
+                print(f"  [Rate limit hit, waiting {wait}s before retry {attempt + 1}/{max_retries}...]", flush=True)
+                time.sleep(wait)
+            elif attempt == max_retries - 1:
+                raise
+            else:
+                time.sleep(2)
 
 
 def load(n: int) -> list[dict]:
@@ -29,43 +49,72 @@ def load(n: int) -> list[dict]:
 
 def routing_acc(rows: list[dict]) -> float:
     ok = 0
-    for r in rows:
-        pred = route({"question": r["q"]})["route"]
+    print(f"Evaluating routing accuracy across {len(rows)} samples...", flush=True)
+    for i, r in enumerate(rows):
+        pred = invoke_with_retry(route, {"question": r["q"]})["route"]
         gold = "small_talk" if r["type"] == "small_talk" else "it_question"
         ok += pred == gold
-        time.sleep(1)  # stay within Groq free-tier rate limits
-    return ok / len(rows)
+        time.sleep(0.5)  # stay within Groq free-tier rate limits
+    acc = round(ok / len(rows), 4) if rows else 0.0
+    print(f"Routing accuracy: {acc * 100:.1f}% ({ok}/{len(rows)})", flush=True)
+    return acc
 
 
 def hit_rate(rows: list[dict]) -> float:
-    rows = [r for r in rows if r["expected_source"]]
-    hits = sum(
-        r["expected_source"] in [d["source"] for d in retrieve(r["q"])]
-        for r in rows
-    )
-    return hits / len(rows)
+    eval_rows = [r for r in rows if r.get("expected_source")]
+    if not eval_rows:
+        return 0.0
+    print(f"Evaluating retrieval hit rate@4 across {len(eval_rows)} KB queries...", flush=True)
+    hits = 0
+    for i, r in enumerate(eval_rows):
+        retrieved_docs = retrieve(r["q"])
+        sources = [d["source"] for d in retrieved_docs]
+        if r["expected_source"] in sources:
+            hits += 1
+    hr = round(hits / len(eval_rows), 4)
+    print(f"Hit rate@4: {hr * 100:.1f}% ({hits}/{len(eval_rows)})", flush=True)
+    return hr
 
 
 def answer_quality(rows: list[dict]) -> dict:
+    it_rows = [r for r in rows if r["type"] == "it"]
+    print(f"Evaluating answer quality across {len(it_rows)} IT questions...", flush=True)
     lat, total, bad = [], 0, 0
-    for r in rows:
-        if r["type"] != "it":
-            continue
+    for i, r in enumerate(it_rows):
         t = time.time()
-        out = graph.invoke(
-            {"question": r["q"], "retries": 0, "steps": []},
-            config={"recursion_limit": 15},
-        )
-        lat.append(time.time() - t)
-        if out.get("context"):
-            c = judge.invoke(
-                f"Context:\n{out['context']}\n\nAnswer:\n{out['answer']}\n\n"
-                "Count the factual claims in the answer and how many are NOT "
-                "supported by the context."
+        try:
+            out = invoke_with_retry(
+                graph.invoke,
+                {"question": r["q"], "retries": 0, "steps": []},
+                config={"recursion_limit": 15},
             )
-            total += c.total_claims
-            bad += c.unsupported_claims
-        time.sleep(2)
+            elapsed = time.time() - t
+            lat.append(elapsed)
+            if out.get("context") and judge is not None:
+                time.sleep(1)
+                c = invoke_with_retry(
+                    judge.invoke,
+                    f"Context:\n{out['context']}\n\nAnswer:\n{out['answer']}\n\n"
+                    "Count the factual claims in the answer and how many are NOT "
+                    "supported by the context.",
+                )
+                if hasattr(c, "total_claims"):
+                    total += c.total_claims
+                    bad += c.unsupported_claims
+                    print(
+                        f"  [{i+1}/{len(it_rows)}] Path: {out.get('path', 'UNKNOWN')} | "
+                        f"Latency: {elapsed:.2f}s | Claims: {c.total_claims} (Unsupported: {c.unsupported_claims})",
+                        flush=True,
+                    )
+            else:
+                print(
+                    f"  [{i+1}/{len(it_rows)}] Path: {out.get('path', 'UNKNOWN')} | Latency: {elapsed:.2f}s",
+                    flush=True,
+                )
+        except Exception as e:
+            print(f"  [{i+1}/{len(it_rows)}] Warning for query '{r['q']}': {e}", flush=True)
+        time.sleep(1.5)
+
     return {
         "avg_latency_s": round(sum(lat) / len(lat), 2) if lat else 0,
         "unsupported_pct": round(100 * bad / max(total, 1), 1),

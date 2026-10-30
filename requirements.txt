@@ -8,7 +8,6 @@ rank_bm25
 tavily-python
 fastapi
 uvicorn[standard]
-streamlit
 pydantic
 python-dotenv
 requests
