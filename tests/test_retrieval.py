@@ -1,4 +1,5 @@
-from app.retrieval import rrf
+from app import retrieval
+from app.retrieval import expand_adjacent_chunks, rrf
 
 
 def test_rrf_prefers_items_in_both_lists():
@@ -14,3 +15,19 @@ def test_rrf_single_list():
 
 def test_rrf_empty():
     assert rrf([]) == []
+
+
+def test_expand_adjacent_chunks_includes_neighbors_from_same_source(monkeypatch):
+    chunks = {
+        f"guide.md-{i}": {"id": f"guide.md-{i}", "source": "guide.md", "text": str(i)}
+        for i in range(3)
+    }
+    monkeypatch.setattr(retrieval, "BY_ID", chunks)
+
+    expanded = expand_adjacent_chunks([chunks["guide.md-1"]])
+
+    assert [chunk["id"] for chunk in expanded] == [
+        "guide.md-0",
+        "guide.md-1",
+        "guide.md-2",
+    ]

@@ -93,6 +93,36 @@ def rrf(rank_lists: list[list[str]], k: int = 60) -> list[str]:
     return sorted(scores, key=scores.get, reverse=True)
 
 
+def expand_adjacent_chunks(docs: list[dict]) -> list[dict]:
+    """Include neighboring chunks so retrieved procedures retain their surrounding steps."""
+    source_order: list[str] = []
+    chunk_numbers: dict[str, set[int]] = {}
+
+    for doc in docs:
+        source = doc.get("source")
+        chunk_id = doc.get("id", "")
+        prefix = f"{source}-" if source else ""
+        if not prefix or not chunk_id.startswith(prefix):
+            continue
+        suffix = chunk_id[len(prefix) :]
+        if not suffix.isdigit():
+            continue
+        if source not in chunk_numbers:
+            source_order.append(source)
+            chunk_numbers[source] = set()
+        number = int(suffix)
+        chunk_numbers[source].update((number - 1, number, number + 1))
+
+    expanded = []
+    for source in source_order:
+        for number in sorted(chunk_numbers[source]):
+            chunk = BY_ID.get(f"{source}-{number}")
+            if chunk is not None and chunk["source"] == source:
+                expanded.append(chunk)
+
+    return expanded or docs
+
+
 def retrieve(q: str, k: int = config.TOP_K) -> list[dict]:
     vec = vector_search(q)
     ids = rrf([vec, bm25_search(q)])[:20] if config.USE_HYBRID and vec else vec or bm25_search(q)

@@ -112,6 +112,12 @@ cp .env.example .env
 # Edit .env and fill in your keys
 ```
 
+On Windows PowerShell, use:
+
+```powershell
+Copy-Item .env.example .env
+```
+
 Required keys in `.env`:
 
 ```
@@ -168,17 +174,74 @@ Results are appended to `eval/results.jsonl`. Pass `--gate` to fail with exit co
 
 ---
 
+## Testing
+
+Run these checks from the project root after installing the Python dependencies:
+
+```powershell
+# Unit tests (no external services required)
+python -m pytest -q tests
+
+# Python lint (install Ruff first if needed: uv pip install ruff)
+ruff check .
+```
+
+The unit tests cover the API health/validation responses, Markdown chunking, and retrieval ranking. They do not send a real chat request to the LLM.
+
+Check the frontend separately:
+
+```powershell
+cd web
+pnpm install --frozen-lockfile
+pnpm lint
+pnpm build
+```
+
+For an end-to-end manual check, start the API and UI in separate terminals. First configure `.env`, ingest the knowledge base (Setup step 3), and start the API from the project root:
+
+```powershell
+uvicorn app.api:app --reload
+```
+
+Check API availability in another terminal:
+
+```powershell
+Invoke-RestMethod http://localhost:8000/health
+# Expected: status = ok
+
+Invoke-RestMethod -Method Post `
+  -Uri http://localhost:8000/chat `
+  -ContentType "application/json" `
+  -Body '{"message":"How do I reset my password?"}'
+```
+
+The chat response should include an `answer`, a `path`, and a `sources` list. Then start the frontend from the `web/` directory with `pnpm dev`, open http://localhost:3000, and submit a suggested question. The UI should display the answer and its source/path metadata. To check that multi-part procedures are returned completely, ask: `According to Acme IT, what should I do if GlobalProtect keeps disconnecting every few minutes?` The answer should use the knowledge base and preserve the troubleshooting steps in the VPN guide's order. If the API is hosted elsewhere, set `API_URL` in `web/.env.local` and restart the frontend.
+
+The retrieval smoke evaluation uses the Pinecone index and downloads/loads the local embedding model, but makes no Groq calls:
+
+```powershell
+python -m eval.run_eval --limit 10 --tag ci --gate
+```
+
+Run the full evaluation only when the required services and API keys are configured; it makes live LLM/search calls, can be rate-limited, and appends results to `eval/results.jsonl`:
+
+```powershell
+python -m eval.run_eval --tag full
+```
+
+---
+
 ## CI
 
 GitHub Actions runs on every push and pull request to `main`:
 
 1. **Lint** — `ruff check .`
-2. **Unit tests** — `pytest -q tests` (7 tests)
+2. **Unit tests** — `pytest -q tests` (8 tests)
 3. **Smoke eval** — `python -m eval.run_eval --limit 10 --tag ci --gate`
-   - Runs retrieval hit rate@4 only (zero Groq API calls — pure sentence-transformer)
+   - Runs retrieval hit rate@4 only (uses the local embedding model and configured retrieval pipeline; no Groq calls)
    - Gates: `hit_rate_at_4 ≥ 0.75`
 
-Required GitHub Actions secrets: `GROQ_API_KEY`, `PINECONE_API_KEY`, `TAVILY_API_KEY`, `LANGSMITH_API_KEY`.
+The smoke evaluation needs `PINECONE_API_KEY`; it does not call Groq or Tavily. Configure `GROQ_API_KEY` and `TAVILY_API_KEY` for full live evaluations. `LANGSMITH_API_KEY` is optional and is only needed when tracing is enabled.
 
 ---
 

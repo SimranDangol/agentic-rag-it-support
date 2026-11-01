@@ -5,7 +5,7 @@ from tavily import TavilyClient
 
 from app import config
 from app.llm import require_llm
-from app.retrieval import retrieve
+from app.retrieval import expand_adjacent_chunks, retrieve
 
 tavily = TavilyClient(api_key=config.TAVILY_API_KEY) if config.TAVILY_API_KEY else None
 
@@ -62,7 +62,7 @@ def direct(state: State) -> dict:
 
 @timed("retrieve")
 def retrieve_node(state: State) -> dict:
-    return {"docs": retrieve(state["question"])}
+    return {"docs": expand_adjacent_chunks(retrieve(state["question"]))}
 
 
 @timed("grade_evidence")
@@ -90,6 +90,9 @@ def web_search(state: State) -> dict:
 GEN_PROMPT = (
     "You are an IT support assistant. Answer ONLY from the context below. "
     "Give clear numbered steps. Cite sources in square brackets like [vpn_guide.md]. "
+    "When the context contains a procedure or checklist that answers the question, "
+    "include every applicable step in its original order; do not skip earlier steps. "
+    "If the context is incomplete, state that instead of guessing. "
     "If the context lacks something, say so instead of guessing.\n"
     "{feedback}\nContext:\n{ctx}\n\nQuestion: {q}"
 )
