@@ -120,24 +120,42 @@ button:disabled { cursor: not-allowed; opacity: .58; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .disclaimer { margin: 9px 0 0; color: #a1aaa5; text-align: center; font-size: 9px; }
 @media (max-width: 760px) {
-  .sidebar { width: 64px; min-width: 64px; padding: 18px 10px 12px; align-items: center; }
-  .brand { padding: 0; }
-  .brand-name, .new-chat, .sidebar-section, .sidebar-bottom .status-card, .profile > span { display: none; }
-  .sidebar-bottom { width: 100%; }
-  .profile { justify-content: center; padding: 12px 0 0; }
-  .topbar { height: 55px; min-height: 55px; padding: 0 16px; }
+  .app-shell { height: 100dvh; min-height: 0; flex-direction: column; overflow: hidden; }
+  .sidebar { width: 100%; min-width: 0; min-height: 0; height: 62px; flex: 0 0 62px; padding: 0 16px; flex-direction: row; align-items: center; gap: 12px; border-right: 0; border-bottom: 1px solid #edf0ed; }
+  .brand { flex-shrink: 0; padding: 0; }
+  .brand-name { display: block; }
+  .new-chat { width: auto; min-width: 0; height: 40px; margin: 0 0 0 auto; padding: 0 12px; font-size: 12px; }
+  .sidebar-section, .sidebar-bottom { display: none; }
+  .main-panel { min-height: 0; }
+  .topbar { height: 54px; min-height: 54px; padding: 0 16px; }
   .secure-label { display: none; }
-  .welcome { padding-top: 24px; }
+  .conversation { overflow-y: auto; overscroll-behavior: contain; }
+  .has-messages { overflow: hidden; }
+  .welcome { width: min(660px, calc(100% - 32px)); flex-shrink: 0; padding: 24px 0; }
   .welcome h1 { font-size: 39px; }
-  .message-list, .composer-wrap { width: calc(100% - 28px); }
+  .message-list, .composer-wrap { width: calc(100% - 32px); }
+  .composer-wrap { padding-bottom: max(12px, env(safe-area-inset-bottom)); }
 }
 @media (max-width: 480px) {
-  .suggestion-grid { grid-template-columns: 1fr; gap: 8px; }
-  .suggestion-card { min-height: 48px; }
-  .welcome { width: calc(100% - 28px); }
+  .sidebar { padding: 0 12px; gap: 8px; }
+  .brand { gap: 8px; }
+  .brand-name { font-size: 13px; }
+  .new-chat { padding: 0 9px; font-size: 11px; }
+  .topbar { padding: 0 12px; }
+  .breadcrumb { gap: 7px; }
+  .help-button { width: 30px; height: 30px; }
+  .suggestion-grid { grid-template-columns: 1fr; gap: 8px; margin-top: 22px; }
+  .suggestion-card { min-height: 48px; font-size: 12px; }
+  .welcome { width: calc(100% - 28px); padding: 18px 0; }
   .welcome-art { transform: scale(.85); margin-bottom: 3px; }
   .welcome h1 { font-size: 35px; letter-spacing: -1.8px; }
-  .composer-options { gap: 9px; }
-  .composer-options label { font-size: 8px; }
+  .message-list, .composer-wrap { width: calc(100% - 24px); }
   .message-list { padding-top: 23px; }
+  .message-row { gap: 8px; }
+  .message-row .avatar { width: 26px; min-width: 26px; height: 26px; }
+  .message-bubble { font-size: 13px; }
+  .composer-options { justify-content: center; gap: 12px; }
+  .composer-options label { font-size: 9px; }
+  .composer { padding-left: 12px; gap: 7px; }
+  .disclaimer { font-size: 8px; }
 }

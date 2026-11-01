@@ -215,7 +215,7 @@ Invoke-RestMethod -Method Post `
   -Body '{"message":"How do I reset my password?"}'
 ```
 
-The chat response should include an `answer`, a `path`, and a `sources` list. Then start the frontend from the `web/` directory with `pnpm dev`, open http://localhost:3000, and submit a suggested question. The UI should display the answer and its source/path metadata. To check that multi-part procedures are returned completely, ask: `According to Acme IT, what should I do if GlobalProtect keeps disconnecting every few minutes?` The answer should use the knowledge base and preserve the troubleshooting steps in the VPN guide's order. If the API is hosted elsewhere, set `API_URL` in `web/.env.local` and restart the frontend.
+The chat response should include an `answer`, a `path`, and a `sources` list. Then start the frontend from the `web/` directory with `pnpm dev`, open http://localhost:3000, and submit a suggested question. The UI should display the answer and its source/path metadata. Resize the browser to a phone-sized viewport to check that the header, new-conversation button, chat, and composer fit without horizontal scrolling. To check that multi-part procedures are returned completely, ask: `According to Acme IT, what should I do if GlobalProtect keeps disconnecting every few minutes?` The answer should use the knowledge base and preserve the troubleshooting steps in the VPN guide's order. If the API is hosted elsewhere, set `API_URL` in `web/.env.local` and restart the frontend.
 
 The retrieval smoke evaluation uses the Pinecone index and downloads/loads the local embedding model, but makes no Groq calls:
 
