@@ -124,134 +124,15 @@ Streamlit is fast to prototype but produces apps that look and behave like devel
 
 ### Sequence Diagram — Query Flow
 
-```mermaid
-sequenceDiagram
-    actor User
-    participant UI as Next.js UI
-    participant API as FastAPI
-    participant Graph as LangGraph
-    participant Router as route node
-    participant Retriever as retrieve node
-    participant Grader as grade_evidence node
-    participant Web as web_search node
-    participant Generator as generate node
-    participant Grounder as check_grounding node
-
-    User->>UI: Submit question
-    UI->>API: POST /chat {message}
-    API->>Graph: graph.invoke({question})
-    Graph->>Router: classify question
-    Router-->>Graph: route = "it_question"
-    Graph->>Retriever: hybrid BM25+vector search
-    Retriever-->>Graph: top-4 docs (expanded)
-    Graph->>Grader: is evidence sufficient?
-    alt KB evidence sufficient
-        Grader-->>Graph: kb_ok = true
-        Graph->>Generator: generate answer from KB docs
-    else KB insufficient
-        Grader-->>Graph: kb_ok = false
-        Graph->>Web: Tavily web search
-        alt Web results found
-            Web-->>Graph: web_results
-            Graph->>Generator: generate answer from web results
-        else No web results
-            Web-->>Graph: empty
-            Graph-->>API: FALLBACK answer
-        end
-    end
-    Generator-->>Graph: answer + context
-    Graph->>Grounder: check every claim vs context
-    alt Answer grounded
-        Grounder-->>Graph: grounded = true
-        Graph-->>API: answer + path + sources
-    else Ungrounded, retries left
-        Grounder-->>Graph: grounded = false, feedback
-        Graph->>Generator: regenerate with feedback
-    else Ungrounded, retries exhausted
-        Grounder-->>Graph: grounded = false
-        Graph-->>API: FALLBACK answer
-    end
-    API-->>UI: {answer, path, sources, latency}
-    UI-->>User: Display answer with citations
-```
+<p align="center">
+  <img src="docs/sequence_diagram.svg" alt="Sequence Diagram" width="800" />
+</p>
 
 ### Class Diagram — Core Components
 
-```mermaid
-classDiagram
-    class State {
-        +str question
-        +str route
-        +list docs
-        +bool kb_ok
-        +list web_results
-        +str answer
-        +list sources
-        +str path
-        +bool grounded
-        +int retries
-        +str feedback
-        +str context
-        +list steps
-    }
-
-    class LangGraph {
-        +StateGraph g
-        +compile() graph
-        +add_node(name, fn)
-        +add_conditional_edges()
-    }
-
-    class Nodes {
-        +route(state) dict
-        +direct(state) dict
-        +retrieve_node(state) dict
-        +grade_evidence(state) dict
-        +web_search(state) dict
-        +generate(state) dict
-        +check_grounding(state) dict
-        +fallback(state) dict
-    }
-
-    class RetrievalPipeline {
-        +BM25Okapi bm25
-        +SentenceTransformer embedder
-        +CrossEncoder reranker
-        +Pinecone index
-        +retrieve(q, k) list
-        +rrf(rank_lists) list
-        +expand_adjacent_chunks(docs) list
-        +vector_search(q, n) list
-        +bm25_search(q, n) list
-    }
-
-    class LLMSetup {
-        +ChatGroq fast
-        +ChatGroq big
-        +router_llm
-        +evidence_llm
-        +grounding_llm
-        +require_llm(name) ChatGroq
-    }
-
-    class FastAPIApp {
-        +GET /health()
-        +POST /chat(body)
-    }
-
-    class Schemas {
-        +RouteDecision
-        +EvidenceGrade
-        +GroundingGrade
-    }
-
-    LangGraph --> State : manages
-    LangGraph --> Nodes : executes
-    Nodes --> RetrievalPipeline : calls retrieve()
-    Nodes --> LLMSetup : calls require_llm()
-    LLMSetup --> Schemas : structured output
-    FastAPIApp --> LangGraph : graph.invoke()
-```
+<p align="center">
+  <img src="docs/class_diagram.svg" alt="Class Diagram" width="550" />
+</p>
 
 ---
 
