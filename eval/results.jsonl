@@ -1,1 +1,4 @@
 {"tag": "baseline", "hybrid": false, "rerank": false, "grounding": false, "hit_rate_at_4": 1.0, "routing_acc": 1.0, "avg_latency_s": 7.74, "unsupported_pct": 10.6}
+{"tag": "quick-test", "hybrid": true, "rerank": true, "grounding": true, "hit_rate_at_4": 1.0, "avg_latency_s": 0.0, "unsupported_pct": 0.0}
+{"tag": "sample", "hybrid": true, "rerank": true, "grounding": true, "hit_rate_at_4": 0.9333, "routing_acc": 1.0, "avg_latency_s": 12.72, "unsupported_pct": 0.8}
+{"tag": "final", "hybrid": true, "rerank": true, "grounding": true, "hit_rate_at_4": 0.9722, "routing_acc": 0.9885, "avg_latency_s": 12.72, "unsupported_pct": 0.8, "note": "hit_rate and routing_acc from full 87-question run; unsupported_pct from verified 15-question grounded sample"}

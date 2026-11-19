@@ -26,21 +26,28 @@ judge = (
 )
 
 
-def invoke_with_retry(fn, *args, max_retries=3, **kwargs):
+def invoke_with_retry(fn, *args, max_retries=6, **kwargs):
     for attempt in range(max_retries):
         try:
             return fn(*args, **kwargs)
         except Exception as e:
             err_msg = str(e).lower()
-            if "429" in err_msg or "rate_limit" in err_msg:
-                match = re.search(r"try again in ([0-9.]+)s", str(e), re.IGNORECASE)
-                wait = (float(match.group(1)) + 1.0) if match else (3.0 * (attempt + 1))
+            if "429" in err_msg or "rate_limit" in err_msg or "rate limit" in err_msg:
+                match_sec = re.search(r"try again in ([0-9.]+)s", str(e), re.IGNORECASE)
+                match_min = re.search(r"try again in (\d+)m([0-9.]+)s", str(e), re.IGNORECASE)
+                if match_min:
+                    wait = float(match_min.group(1)) * 60 + float(match_min.group(2)) + 2.0
+                elif match_sec:
+                    wait = float(match_sec.group(1)) + 2.0
+                else:
+                    # Rolling TPM window on free-tier needs ~15-25s to refill
+                    wait = 15.0 + (10.0 * attempt)
                 print(f"  [Rate limit: waiting {wait:.1f}s before retry {attempt + 1}/{max_retries}...]", flush=True)
                 time.sleep(wait)
             elif attempt == max_retries - 1:
                 raise
             else:
-                time.sleep(1.5)
+                time.sleep(2.0)
     raise RuntimeError(f"Exceeded {max_retries} retries due to persistent rate limiting.")
 
 
@@ -94,7 +101,7 @@ def answer_quality(rows: list[dict]) -> dict:
             elapsed = time.time() - t
             lat.append(elapsed)
             if out and out.get("context") and judge is not None:
-                time.sleep(2)
+                time.sleep(2.5)
                 c = invoke_with_retry(
                     judge.invoke,
                     f"Context:\n{out['context']}\n\nAnswer:\n{out['answer']}\n\n"
@@ -116,7 +123,7 @@ def answer_quality(rows: list[dict]) -> dict:
                 )
         except Exception as e:
             print(f"  [{i+1}/{len(it_rows)}] Warning for query '{r['q']}': {e}", flush=True)
-        time.sleep(2.5)
+        time.sleep(3.5)
 
     return {
         "avg_latency_s": round(sum(lat) / len(lat), 2) if lat else 0,
