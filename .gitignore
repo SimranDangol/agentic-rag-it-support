@@ -18,6 +18,7 @@ __pycache__/
 node_modules/
 .next/
 out/
+*.tsbuildinfo
 web/.env.local
 
 # VS Code

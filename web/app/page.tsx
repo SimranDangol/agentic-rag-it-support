@@ -2,7 +2,76 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { FormEvent, KeyboardEvent } from "react";
-import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+
+export type UserProfile = {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  avatar: string;
+};
+
+function formatContent(raw: string): string {
+  // Convert 【source.md】 or 【http...】 citations into cleaner inline markdown syntax
+  return raw.replace(/【([^】]+)】/g, (_, source) => {
+    const trimmed = String(source).trim();
+    if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+      try {
+        const host = new URL(trimmed).hostname.replace(/^www\./, "");
+        return ` [↗ ${host}](${trimmed})`;
+      } catch {
+        return ` [↗ link](${trimmed})`;
+      }
+    }
+    return ` \`📄 ${trimmed}\``;
+  });
+}
+
+function MarkdownRenderer({ content }: { content: string }) {
+  const formatted = formatContent(content);
+
+  return (
+    <div className="markdown-body">
+      <ReactMarkdown
+        components={{
+          code({ className, children, ...props }) {
+            const text = String(children);
+            if (text.startsWith("📄 ")) {
+              return (
+                <span className="citation-pill">
+                  <span className="citation-pill-icon">📄</span>
+                  <span>{text.slice(2)}</span>
+                </span>
+              );
+            }
+            return (
+              <code className={`inline-code ${className ?? ""}`.trim()} {...props}>
+                {children}
+              </code>
+            );
+          },
+          a({ href, children, ...props }) {
+            return (
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="markdown-link"
+                {...props}
+              >
+                {children}
+              </a>
+            );
+          },
+        }}
+      >
+        {formatted}
+      </ReactMarkdown>
+    </div>
+  );
+}
 
 type Path = "KNOWLEDGE BASE" | "WEB" | "FALLBACK" | "DIRECT";
 type Step = { node: string; sec: number };
@@ -57,6 +126,13 @@ function getErrorMessage(value: unknown): string {
 }
 
 export default function Home() {
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loginSubmitting, setLoginSubmitting] = useState(false);
+
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [draft, setDraft] = useState("");
   const [pending, setPending] = useState(false);
@@ -66,8 +142,63 @@ export default function Home() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch("/api/auth/me");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && data.user) {
+            setUser(data.user);
+          }
+        }
+      } catch {
+        // Fallback or unauthenticated
+      } finally {
+        setAuthLoading(false);
+      }
+    }
+    void checkAuth();
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [messages, pending]);
+
+  async function handleLogin(emailToUse?: string, passwordToUse?: string) {
+    const targetEmail = (emailToUse ?? loginEmail).trim();
+    const targetPassword = (passwordToUse ?? loginPassword).trim();
+    if (!targetEmail) {
+      setLoginError("Please enter your corporate email.");
+      return;
+    }
+    setLoginError("");
+    setLoginSubmitting(true);
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: targetEmail, password: targetPassword }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setLoginError(data.error || "Login failed.");
+      } else {
+        setUser(data.user);
+      }
+    } catch {
+      setLoginError("Network error. Please try again.");
+    } finally {
+      setLoginSubmitting(false);
+    }
+  }
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {}
+    setUser(null);
+    setMessages([]);
+  }
 
   async function sendMessage(rawMessage: string) {
     const message = rawMessage.trim();
@@ -110,21 +241,13 @@ export default function Home() {
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content:
-            error instanceof Error
-              ? error.message
-              : "Something went wrong while contacting the assistant.",
+          content: error instanceof Error ? error.message : "Something went wrong.",
           error: true,
         },
       ]);
     } finally {
       setPending(false);
     }
-  }
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    void sendMessage(draft);
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLTextAreaElement>) {
@@ -134,27 +257,143 @@ export default function Home() {
     }
   }
 
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void sendMessage(draft);
+  }
+
+  if (authLoading) {
+    return (
+      <div className="auth-container">
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+          <div className="brand-mark" style={{ width: 44, height: 44, fontSize: 22 }}>it</div>
+          <span className="send-spinner" style={{ width: 22, height: 22, borderTopColor: "#2e9b77" }} />
+          <p style={{ color: "#7f8b84", fontSize: 12 }}>Loading workspace...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="auth-container">
+        <div className="auth-card">
+          <div className="auth-brand">
+            <div className="brand-mark">it</div>
+            <div className="brand-name">helpdesk<span>copilot</span></div>
+          </div>
+          <h2>Employee Sign In</h2>
+          <p className="auth-subtitle">Sign in to your XYZ workspace to access IT support</p>
+
+          {loginError && <div className="auth-error">{loginError}</div>}
+
+          <div className="demo-section">
+            <p className="demo-label">Demo Profiles (One-Click Sign In)</p>
+            <div className="demo-grid">
+              <button
+                type="button"
+                className="demo-btn"
+                onClick={() => void handleLogin("simran@xyz.example", "password123")}
+                disabled={loginSubmitting}
+              >
+                <div className="demo-avatar">S</div>
+                <div className="demo-info">
+                  <strong>Simran Dangol</strong>
+                  <small>Employee · Engineering</small>
+                </div>
+                <span className="demo-arrow">→</span>
+              </button>
+              <button
+                type="button"
+                className="demo-btn"
+                onClick={() => void handleLogin("alex@xyz.example", "password123")}
+                disabled={loginSubmitting}
+              >
+                <div className="demo-avatar">A</div>
+                <div className="demo-info">
+                  <strong>Alex Chen</strong>
+                  <small>Staff Engineer · Platform Infrastructure</small>
+                </div>
+                <span className="demo-arrow">→</span>
+              </button>
+              <button
+                type="button"
+                className="demo-btn"
+                onClick={() => void handleLogin("admin@xyz.example", "admin123")}
+                disabled={loginSubmitting}
+              >
+                <div className="demo-avatar">J</div>
+                <div className="demo-info">
+                  <strong>Jordan Lee</strong>
+                  <small>IT Administrator · Corporate Security</small>
+                </div>
+                <span className="demo-arrow">→</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="auth-divider">or use corporate email</div>
+
+          <form onSubmit={(e) => { e.preventDefault(); void handleLogin(); }} className="auth-form">
+            <div className="input-group">
+              <label htmlFor="auth-email">Corporate Email</label>
+              <input
+                id="auth-email"
+                type="email"
+                placeholder="username@xyz.example"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="input-group">
+              <label htmlFor="auth-password">Password</label>
+              <input
+                id="auth-password"
+                type="password"
+                placeholder="••••••••"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+                required
+              />
+            </div>
+            <button type="submit" className="auth-submit" disabled={loginSubmitting}>
+              {loginSubmitting ? "Authenticating..." : "Sign In to Copilot"}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            <span>◇</span> Protected by XYZ Zero-Trust SSO & MFA
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <main className="app-shell">
       <aside className="sidebar">
-        <Link className="brand" href="/" aria-label="IT Support Copilot home">
-          <span className="brand-mark">it</span>
-          <span className="brand-name">helpdesk<span>copilot</span></span>
-        </Link>
+        <div className="brand">
+          <div className="brand-mark">it</div>
+          <div className="brand-name">helpdesk<span>copilot</span></div>
+        </div>
 
         <button
           className="new-chat"
-          onClick={() => !pending && setMessages([])}
+          onClick={() => setMessages([])}
           disabled={pending}
         >
-          <span aria-hidden="true">＋</span> New conversation
+          <span>+</span> New conversation
         </button>
 
         <div className="sidebar-section">
           <p className="section-label">YOUR WORKSPACE</p>
           <div className="workspace-card">
-            <span className="workspace-icon">A</span>
-            <span><strong>Acme Corporation</strong><small>IT Support</small></span>
+            <div className="workspace-icon">A</div>
+            <div>
+              <strong>XYZ</strong>
+              <small>IT Support</small>
+            </div>
             <span className="chevron">⌄</span>
           </div>
         </div>
@@ -179,8 +418,11 @@ export default function Home() {
             <span><strong>Support assistant online</strong><small>Answers grounded in your IT guide</small></span>
           </div>
           <div className="profile">
-            <div className="avatar user-avatar">S</div>
-            <span><strong>Simran</strong><small>Employee</small></span>
+            <div className="avatar user-avatar">{user.avatar}</div>
+            <span><strong>{user.name}</strong><small>{user.role} · {user.department}</small></span>
+            <button className="logout-btn" onClick={() => void handleLogout()} title="Sign out">
+              Sign out
+            </button>
           </div>
         </div>
       </aside>
@@ -189,8 +431,7 @@ export default function Home() {
         <header className="topbar">
           <div className="breadcrumb"><span>Workspace</span><b>/</b><strong>IT Support</strong></div>
           <div className="topbar-right">
-            <span className="secure-label"><span>◇</span> Private workspace</span>
-            <span className="help-button" aria-label="Help">?</span>
+            <span className="secure-label"><span>◇</span> {user.email}</span>
           </div>
         </header>
 
@@ -205,7 +446,7 @@ export default function Home() {
                 <span className="art-spark spark-two">✧</span>
                 <span className="art-spark spark-three">·</span>
               </div>
-              <p className="eyebrow"><span className="status-dot" /> YOUR IT ASSISTANT</p>
+              <p className="eyebrow"><span className="status-dot" /> WELCOME, {user.name.toUpperCase().split(" ")[0]}</p>
               <h1>How can I help<br />you <span>today?</span></h1>
               <p className="welcome-copy">
                 Get clear, step-by-step help with your workplace tech.
@@ -232,11 +473,11 @@ export default function Home() {
               {messages.map((message) => (
                 <article className={`message-row ${message.role}`} key={message.id}>
                   <div className={`avatar ${message.role === "assistant" ? "assistant-avatar" : "user-avatar"}`}>
-                    {message.role === "assistant" ? "✳" : "S"}
+                    {message.role === "assistant" ? "✳" : user.avatar}
                   </div>
                   <div className="message-content">
                     <div className="message-heading">
-                      <strong>{message.role === "assistant" ? "Support Copilot" : "You"}</strong>
+                      <strong>{message.role === "assistant" ? "Support Copilot" : user.name}</strong>
                       {message.role === "assistant" && !message.error && message.latency !== undefined && (
                         <span>{message.latency}s</span>
                       )}
@@ -247,12 +488,43 @@ export default function Home() {
                       </span>
                     )}
                     <div className={`message-bubble ${message.error ? "error-bubble" : ""}`}>
-                      {message.content}
+                      {message.role === "assistant" && !message.error ? (
+                        <MarkdownRenderer content={message.content} />
+                      ) : (
+                        message.content
+                      )}
                     </div>
                     {message.role === "assistant" && !message.error && (
                       <div className="message-meta">
                         {showSources && message.sources && message.sources.length > 0 && (
-                          <span className="source-list">Sources: {message.sources.join(", ")}</span>
+                          <div className="source-chips">
+                            <span className="sources-label">Sources:</span>
+                            {message.sources.map((src, idx) => {
+                              const isUrl = src.startsWith("http://") || src.startsWith("https://");
+                              if (isUrl) {
+                                let label = src;
+                                try {
+                                  label = new URL(src).hostname.replace(/^www\./, "");
+                                } catch {}
+                                return (
+                                  <a
+                                    key={idx}
+                                    href={src}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="source-chip source-chip-link"
+                                  >
+                                    <span className="source-chip-icon">🌐</span> {label}
+                                  </a>
+                                );
+                              }
+                              return (
+                                <span key={idx} className="source-chip">
+                                  <span className="source-chip-icon">📄</span> {src}
+                                </span>
+                              );
+                            })}
+                          </div>
                         )}
                         {showSteps && message.steps && message.steps.length > 0 && (
                           <details className="steps-details">
@@ -267,7 +539,7 @@ export default function Home() {
                           </details>
                         )}
                         {message.path === "FALLBACK" && (
-                          <a className="helpdesk-link" href="mailto:helpdesk@acme.example">
+                          <a className="helpdesk-link" href="mailto:helpdesk@xyz.example">
                             Contact helpdesk · ext. 4357
                           </a>
                         )}

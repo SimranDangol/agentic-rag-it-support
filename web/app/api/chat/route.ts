@@ -1,8 +1,14 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { AUTH_COOKIE_NAME, parseSessionToken } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(AUTH_COOKIE_NAME)?.value;
+  const user = token ? parseSessionToken(token) : null;
+
   let body: unknown;
   try {
     body = await request.json();
@@ -32,9 +38,16 @@ export async function POST(request: Request) {
   );
 
   try {
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (user) {
+      headers["X-User-Email"] = user.email;
+      headers["X-User-Name"] = user.name;
+      headers["X-User-Role"] = user.role;
+    }
+
     const response = await fetch(`${apiUrl}/chat`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({ message: body.message }),
       cache: "no-store",
       signal: AbortSignal.timeout(130_000),
