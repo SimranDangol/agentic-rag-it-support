@@ -10,37 +10,9 @@ An agentic RAG system that routes employee IT questions across three paths — a
 
 The agent is a **LangGraph state machine** with conditional edges. Every question is classified first; IT questions enter the retrieval pipeline, small talk gets a direct reply. Retrieved evidence is graded before generation, and every generated answer is checked for grounding before it leaves the pipeline.
 
-![System Architecture](docs/architecture.svg)
-
-```mermaid
-graph TD
-    __start__([START]):::first
-    route(route)
-    direct(direct)
-    retrieve(retrieve)
-    grade_evidence(grade_evidence)
-    web_search(web_search)
-    generate(generate)
-    check_grounding(check_grounding)
-    fallback(fallback)
-    __end__([END]):::last
-    __start__ --> route
-    route -.-> direct
-    route -.-> retrieve
-    retrieve --> grade_evidence
-    grade_evidence -.-> generate
-    grade_evidence -.-> web_search
-    web_search -.-> generate
-    web_search -.-> fallback
-    generate --> check_grounding
-    check_grounding -.-> __end__
-    check_grounding -.-> fallback
-    check_grounding -.-> generate
-    direct --> __end__
-    fallback --> __end__
-    classDef first fill-opacity:0
-    classDef last fill:#bfb6fc
-```
+<p align="center">
+  <img src="docs/architecture.svg" alt="System Architecture" width="550" />
+</p>
 
 ### Answer paths
 
@@ -204,8 +176,6 @@ sequenceDiagram
 ```
 
 ### Class Diagram — Core Components
-
-![Class Diagram](docs/class_diagram.svg)
 
 ```mermaid
 classDiagram
