@@ -4,6 +4,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Limit PyTorch / OpenMP CPU threads to avoid excessive memory allocation in 512MB containers
+os.environ.setdefault("OMP_NUM_THREADS", "1")
+os.environ.setdefault("MKL_NUM_THREADS", "1")
+os.environ.setdefault("OPENBLAS_NUM_THREADS", "1")
+os.environ.setdefault("VECLIB_MAXIMUM_THREADS", "1")
+os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
+os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+try:
+    import torch
+    torch.set_num_threads(1)
+    torch.set_num_interop_threads(1)
+except Exception:
+    pass
+
 # Set cache directories on F: drive to prevent C: drive exhaustion
 if os.path.exists("F:/"):
     os.environ.setdefault("HF_HOME", "F:/hf_cache")
